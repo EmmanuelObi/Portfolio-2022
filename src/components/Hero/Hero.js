@@ -22,7 +22,7 @@ const Hero = (props) => (
       <Button
         onClick={() => (window.location = "mailto://obiemmy123@gmail.com")}
       >
-        Learn More
+        Contact Me
       </Button>
     </LeftSection>
   </Section>
