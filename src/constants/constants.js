@@ -10,6 +10,16 @@ export const projects = [
     id: 0,
   },
   {
+    title: "Emmanuel Obi",
+    description:
+      "My 2020 modern Portfolio website. Developed using React, NextJs, Styled Components",
+    image: "/images/portfolio.jpg",
+    tags: ["JavaScript", "React", "NextJs", "styled components"],
+    source: "https://github.com/EmmanuelObi/Portfolio-2022",
+    visit: "https://emmanuel-obi.vercel.app",
+    id: 1,
+  },
+  {
     title: "WalletStore",
     description:
       "A simple web wallet demo I created While learning about Netlify Forms. this application is succesfully able to send and retrieve data through netlify forms using HTML, CSS and JavaScript",
@@ -17,7 +27,7 @@ export const projects = [
     tags: ["JavaScript", "CSS", "HTML", "Netlify Forms"],
     source: "https://github.com/EmmanuelObi/wallet",
     visit: "https://walletsdemo.netlify.app/",
-    id: 1,
+    id: 2,
   },
 ];
 
