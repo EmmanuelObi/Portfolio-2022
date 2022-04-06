@@ -29,6 +29,52 @@ export const projects = [
     visit: "https://walletsdemo.netlify.app/",
     id: 2,
   },
+  {
+    title: "Dishly",
+    description:
+      "Simple application to note your list of dishes and their ingredients",
+    image: "/images/dishly.jpg",
+    tags: ["JavaScript", "CSS", "HTML", "React", "Material UI"],
+    source: "https://github.com/EmmanuelObi/DishList",
+    visit: "https://dishly.netlify.app/",
+    id: 3,
+  },
+  {
+    title: "BreakOut",
+    description: "Play ypourself away in this Breakout Game. Enjoy!",
+    image: "/images/breakout.jpg",
+    tags: ["JavaScript", "CSS", "HTML", "Canvas API"],
+    source: "https://github.com/EmmanuelObi/BreakOutGame",
+    visit: "https://breakoutgame01.netlify.app/",
+    id: 4,
+  },
+  {
+    title: "Hangman",
+    description: "Hangman game. Try not to miss the letters. haha",
+    image: "/images/hangman.jpg",
+    tags: ["JavaScript", "CSS", "HTML"],
+    source: "https://github.com/EmmanuelObi/HangMan",
+    visit: "https://readyhangman.netlify.app/",
+    id: 5,
+  },
+  {
+    title: "Relaxer",
+    description: "Settle down, try to relax. let me help you.",
+    image: "/images/relaxer.jpg",
+    tags: ["JavaScript", "CSS", "HTML"],
+    source: "https://github.com/EmmanuelObi/RelaxerApp",
+    visit: "https://settledown.netlify.app/",
+    id: 6,
+  },
+  {
+    title: "Typist",
+    description: "How fast can you type correctly",
+    image: "/images/typist.jpg",
+    tags: ["JavaScript", "CSS", "HTML"],
+    source: "https://github.com/EmmanuelObi/TypingGame",
+    visit: "https://typegamer.netlify.app/",
+    id: 7,
+  },
 ];
 
 export const TimeLineData = [
