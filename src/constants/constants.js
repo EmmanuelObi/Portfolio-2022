@@ -12,7 +12,7 @@ export const projects = [
   {
     title: "Lara Beta Version",
     description:
-      "Rebuilt using React with new and improved user interface, increased amount of features and more loacations added.",
+      "Rebuilt using React with new and improved user interface, increased amount of features and more locations added.",
     image: "/images/beta.jpeg",
     tags: ["HTML5", "CSS3", "JavaScript", "React"],
     source: "https://bitbucket.org/rp-dev0/lara_beta_frontend/src/develop/",
@@ -22,7 +22,7 @@ export const projects = [
   {
     title: "WireMoney",
     description:
-      "Send Money Fast With Our Solution.",
+      "Whether you are sending money to loved ones back home, or getting payments from clients overseas, Wiremoney makes it super easy and fast with lower transfer fees",
     image: "/images/wm.jpeg",
     tags: ["JavaScript", "CSS", "HTML", "Angular", "Bootstrap"],
     source: "https://bitbucket.org/opsz2/web/src/develop/",
@@ -34,16 +34,16 @@ export const projects = [
     description:
       "Global Accelerex is the leading provider of electronic payment and financial technology solutions in Nigeria",
     image: "/images/ga.jpeg",
-    tags: ["JavaScript", "CSS", "HTML", "React", "Material UI", "Bootstrap"],
+    tags: ["TypeScript", "CSS", "HTML", "React", "Material UI", "Bootstrap"],
     source: "https://bitbucket.org/opsz2/ga-webclient/src/master/",
     visit: "http://global-accelerex-web.herokuapp.com/",
     id: 3,
   },
   {
     title: "Web3 lottery game",
-    description: "Accelerex Holdings is a FinTech investment company dedicated to simplifying everyday life across Africa through innovative digital payments and financial services.",
+    description: "Bitokun (BITKN) is a decentralized lottery platform that lets users deposit cryptocurrency into pools to win daily prizes",
     image: "/images/bt.jpeg",
-    tags: ["JavaScript", "CSS", "HTML", "React", "NextJs", "Bootstrap", "Moralis", "Metamask", "WalletConnect"],
+    tags: ["TypeScript", "CSS", "HTML", "React", "NextJs", "Bootstrap", "Moralis", "Metamask", "WalletConnect"],
     source: "https://github.com/Bitokun-Dev/bitokun-frontend",
     visit: "https://bitokun.com/",
     id: 4,
@@ -52,7 +52,7 @@ export const projects = [
     title: "Accelerex Holdings",
     description: "Accelerex Holdings is a FinTech investment company dedicated to simplifying everyday life across Africa through innovative digital payments and financial services.",
     image: "/images/ah.jpeg",
-    tags: ["JavaScript", "CSS", "HTML", "React", "Material UI", "Bootstrap"],
+    tags: ["TypeScript", "CSS", "HTML", "React", "Material UI", "Bootstrap"],
     source: "https://bitbucket.org/opsz2/ga-webclient/src/master/",
     visit: "https://ah-web-client.herokuapp.com/",
     id: 5,
@@ -71,7 +71,7 @@ export const projects = [
   {
     title: "Emmanuel Obi",
     description:
-      "My 2020 modern Portfolio website. Developed using React, NextJs, Styled Components",
+      "My 2022 modern Portfolio website. Developed using React, NextJs, Styled Components",
     image: "/images/portfolio.jpg",
     tags: ["JavaScript", "React", "NextJs", "styled components"],
     source: "https://github.com/EmmanuelObi/Portfolio-2022",
@@ -100,7 +100,7 @@ export const projects = [
   },
   {
     title: "BreakOut",
-    description: "Play ypourself away in this Breakout Game. Enjoy!",
+    description: "Play yourself away in this Breakout Game. Enjoy!",
     image: "/images/breakout.jpg",
     tags: ["JavaScript", "CSS", "HTML", "Canvas API"],
     source: "https://github.com/EmmanuelObi/BreakOutGame",
