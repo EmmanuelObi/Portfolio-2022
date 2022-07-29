@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Img = styled.img`
   width:100%;
-  height:100%;
+  height:250px;
   object-fit: cover;
   overflow: hidden;
 `
@@ -105,8 +105,10 @@ export const TagList = styled.ul`
 display: flex;
 justify-content: space-around;
 padding: 2rem;
+flex-wrap: wrap;
 `
 export const Tag = styled.li`
 color: #d8bfbf;
 font-size: 1.5rem;
+margin: 5px;
 `

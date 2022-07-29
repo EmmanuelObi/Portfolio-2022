@@ -1,5 +1,64 @@
 export const projects = [
   {
+    title: "Lara",
+    description:
+      "Meet Lara, your automated directions assistant for various locations in Nigeria. Built using plain Javascript also leveraging Artificial Intelligence Systems",
+    image: "/images/live.jpeg",
+    tags: ["HTML5", "CSS3", "JavaScript"],
+    source: "https://bitbucket.org/rp-dev0/lara_frontend/src/aa5444a9f9d14bb18c43ca4b479d4e19cd9a84c6/?at=feature%2Flink_to_beta",
+    visit: "https://lara.ng",
+    id: 0,
+  },
+  {
+    title: "Lara Beta Version",
+    description:
+      "Rebuilt using React with new and improved user interface, increased amount of features and more loacations added.",
+    image: "/images/beta.jpeg",
+    tags: ["HTML5", "CSS3", "JavaScript", "React"],
+    source: "https://bitbucket.org/rp-dev0/lara_beta_frontend/src/develop/",
+    visit: "https://beta.lara.ng",
+    id: 1,
+  },
+  {
+    title: "WireMoney",
+    description:
+      "Send Money Fast With Our Solution.",
+    image: "/images/wm.jpeg",
+    tags: ["JavaScript", "CSS", "HTML", "Angular", "Bootstrap"],
+    source: "https://bitbucket.org/opsz2/web/src/develop/",
+    visit: "https://wiremoney.com.au",
+    id: 2,
+  },
+  {
+    title: "Global Accelerex",
+    description:
+      "Global Accelerex is the leading provider of electronic payment and financial technology solutions in Nigeria",
+    image: "/images/ga.jpeg",
+    tags: ["JavaScript", "CSS", "HTML", "React", "Material UI", "Bootstrap"],
+    source: "https://bitbucket.org/opsz2/ga-webclient/src/master/",
+    visit: "http://global-accelerex-web.herokuapp.com/",
+    id: 3,
+  },
+  {
+    title: "Web3 lottery game",
+    description: "Accelerex Holdings is a FinTech investment company dedicated to simplifying everyday life across Africa through innovative digital payments and financial services.",
+    image: "/images/bt.jpeg",
+    tags: ["JavaScript", "CSS", "HTML", "React", "NextJs", "Bootstrap", "Moralis", "Metamask", "WalletConnect"],
+    source: "https://github.com/Bitokun-Dev/bitokun-frontend",
+    visit: "https://bitokun.com/",
+    id: 4,
+  },
+  {
+    title: "Accelerex Holdings",
+    description: "Accelerex Holdings is a FinTech investment company dedicated to simplifying everyday life across Africa through innovative digital payments and financial services.",
+    image: "/images/ah.jpeg",
+    tags: ["JavaScript", "CSS", "HTML", "React", "Material UI", "Bootstrap"],
+    source: "https://bitbucket.org/opsz2/ga-webclient/src/master/",
+    visit: "https://ah-web-client.herokuapp.com/",
+    id: 5,
+  },
+
+  {
     title: "Tic-Tac-Toe",
     description:
       "Using Plain JavaScript, HTML5, CSS3 and Object Oriented Programming Concepts. I built a properly functional tic-tac-toe game.",
@@ -7,7 +66,7 @@ export const projects = [
     tags: ["HTML5", "CSS3", "JavaScript"],
     source: "https://github.com/EmmanuelObi/tic-tac-toe-game",
     visit: "https://my-tictac-toe.netlify.app/",
-    id: 0,
+    id: 6,
   },
   {
     title: "Emmanuel Obi",
@@ -17,7 +76,7 @@ export const projects = [
     tags: ["JavaScript", "React", "NextJs", "styled components"],
     source: "https://github.com/EmmanuelObi/Portfolio-2022",
     visit: "https://emmanuel-obi.vercel.app",
-    id: 1,
+    id: 7,
   },
   {
     title: "WalletStore",
@@ -27,7 +86,7 @@ export const projects = [
     tags: ["JavaScript", "CSS", "HTML", "Netlify Forms"],
     source: "https://github.com/EmmanuelObi/wallet",
     visit: "https://walletsdemo.netlify.app/",
-    id: 2,
+    id: 8,
   },
   {
     title: "Dishly",
@@ -37,7 +96,7 @@ export const projects = [
     tags: ["JavaScript", "CSS", "HTML", "React", "Material UI"],
     source: "https://github.com/EmmanuelObi/DishList",
     visit: "https://dishly.netlify.app/",
-    id: 3,
+    id: 9,
   },
   {
     title: "BreakOut",
@@ -46,7 +105,7 @@ export const projects = [
     tags: ["JavaScript", "CSS", "HTML", "Canvas API"],
     source: "https://github.com/EmmanuelObi/BreakOutGame",
     visit: "https://breakoutgame01.netlify.app/",
-    id: 4,
+    id: 10,
   },
   {
     title: "Hangman",
@@ -55,7 +114,7 @@ export const projects = [
     tags: ["JavaScript", "CSS", "HTML"],
     source: "https://github.com/EmmanuelObi/HangMan",
     visit: "https://readyhangman.netlify.app/",
-    id: 5,
+    id: 11,
   },
   {
     title: "Relaxer",
@@ -64,7 +123,7 @@ export const projects = [
     tags: ["JavaScript", "CSS", "HTML"],
     source: "https://github.com/EmmanuelObi/RelaxerApp",
     visit: "https://settledown.netlify.app/",
-    id: 6,
+    id: 12,
   },
   {
     title: "Typist",
@@ -73,23 +132,18 @@ export const projects = [
     tags: ["JavaScript", "CSS", "HTML"],
     source: "https://github.com/EmmanuelObi/TypingGame",
     visit: "https://typegamer.netlify.app/",
-    id: 7,
+    id: 13,
   },
 ];
 
 export const TimeLineData = [
   {
-    year: "March 2020",
+    year: "Jan 2020",
     text: "Started my journey into tech during the pandemic",
   },
-  { year: "Dec 2020", text: "Started applying for Internships." },
+  { year: "Nov 2020", text: "Started applying for roles." },
   {
-    year: "Feb 2021",
-    text: "Got my first Internship placement as a Front-end Developer.",
+    year: "Jan 2021",
+    text: "Got my first role as a Frontend Developer.",
   },
-  {
-    year: "July 2021",
-    text: "Got my first Job offer as a Front-end Developer.",
-  },
-  { year: "Aug 2021", text: "Started blogging about my journey." },
 ];
