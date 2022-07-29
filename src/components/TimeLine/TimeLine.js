@@ -68,8 +68,8 @@ const Timeline = () => {
       <br />
       <SectionTitle>About Me</SectionTitle>
       <SectionText>
-        I've been programming for around 2 years and tutoring for over 6 months.
-        I'm a Developer, Blogger, Tutor and an Electrical Engineering Major who
+        I've been programming for over 2 years and tutoring for over 6 months.
+        I'm a Developer, Tutor and a Telecommunications Engineering Major who
         loves to code. I love to think I've mastered the art of learning and
         always loves to share my knowledge. I'm passionate about the tech
         community and support inclusion for women in technology. I co-organize
