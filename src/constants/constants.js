@@ -5,7 +5,8 @@ export const projects = [
       "Meet Lara, your automated directions assistant for various locations in Nigeria. Built using plain Javascript also leveraging Artificial Intelligence Systems",
     image: "/images/live.jpeg",
     tags: ["HTML5", "CSS3", "JavaScript"],
-    source: "https://bitbucket.org/rp-dev0/lara_frontend/src/aa5444a9f9d14bb18c43ca4b479d4e19cd9a84c6/?at=feature%2Flink_to_beta",
+    source:
+      "https://bitbucket.org/rp-dev0/lara_frontend/src/aa5444a9f9d14bb18c43ca4b479d4e19cd9a84c6/?at=feature%2Flink_to_beta",
     visit: "https://lara.ng",
     id: 0,
   },
@@ -41,16 +42,28 @@ export const projects = [
   },
   {
     title: "Web3 lottery game",
-    description: "Bitokun (BITKN) is a decentralized lottery platform that lets users deposit cryptocurrency into pools to win daily prizes",
+    description:
+      "Bitokun (BITKN) is a decentralized lottery platform that lets users deposit cryptocurrency into pools to win daily prizes",
     image: "/images/bt.jpeg",
-    tags: ["TypeScript", "CSS", "HTML", "React", "NextJs", "Bootstrap", "Moralis", "Metamask", "WalletConnect"],
+    tags: [
+      "TypeScript",
+      "CSS",
+      "HTML",
+      "React",
+      "NextJs",
+      "Bootstrap",
+      "Moralis",
+      "Metamask",
+      "WalletConnect",
+    ],
     source: "https://github.com/Bitokun-Dev/bitokun-frontend",
     visit: "https://bitokun.com/",
     id: 4,
   },
   {
     title: "Accelerex Holdings",
-    description: "Accelerex Holdings is a FinTech investment company dedicated to simplifying everyday life across Africa through innovative digital payments and financial services.",
+    description:
+      "Accelerex Holdings is a FinTech investment company dedicated to simplifying everyday life across Africa through innovative digital payments and financial services.",
     image: "/images/ah.jpeg",
     tags: ["TypeScript", "CSS", "HTML", "React", "Material UI", "Bootstrap"],
     source: "https://bitbucket.org/opsz2/ga-webclient/src/master/",
@@ -72,7 +85,7 @@ export const projects = [
     title: "Emmanuel Obi",
     description:
       "My 2022 modern Portfolio website. Developed using React, NextJs, Styled Components",
-    image: "/images/portfolio.jpg",
+    image: "/images/portfolio.png",
     tags: ["JavaScript", "React", "NextJs", "styled components"],
     source: "https://github.com/EmmanuelObi/Portfolio-2022",
     visit: "https://emmanuel-obi.vercel.app",
