@@ -5,8 +5,9 @@ import {
   SectionText,
   SectionTitle,
 } from "../../styles/GlobalComponents";
-import Button from "../../styles/GlobalComponents/Button";
 import { LeftSection } from "./HeroStyles";
+import { Div3 , SocialIcons} from "../Header/HeaderStyles";
+import { AiFillGithub, AiFillInstagram, AiFillLinkedin, AiFillBook } from "react-icons/ai";
 
 const Hero = (props) => (
   <Section row noPadding>
@@ -19,11 +20,23 @@ const Hero = (props) => (
         A Frontend Developer focused on creating responsive, user-friendly and
         accessible websites and web applications. <br /> minimalist at heart.
       </SectionText>
-      <Button
-        onClick={() => (window.location = "mailto://obiemmy123@gmail.com")}
-      >
-        Contact Me
-      </Button>
+      
+      <div style={{display: "flex", flexWrap: "wrap"}}>
+      <SocialIcons href="https://github.com/emmanuelobi">
+        <AiFillGithub size="4rem" />
+      </SocialIcons>
+      <SocialIcons href="https://linkedin.com/in/emmanuelobi20">
+        <AiFillLinkedin size="4rem" />
+      </SocialIcons>
+      <SocialIcons href="https://instagram.com/koliko_official">
+        <AiFillInstagram size="4rem" />
+      </SocialIcons>
+      <SocialIcons href="https://codeprophet.hashnode.dev">
+        <AiFillBook size="4rem" />
+      </SocialIcons>
+      </div>
+   
+     
     </LeftSection>
   </Section>
 );

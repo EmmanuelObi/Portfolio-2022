@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { AiFillGithub, AiFillInstagram, AiFillLinkedin } from "react-icons/ai";
+import { AiFillGithub, AiFillInstagram, AiFillLinkedin , AiFillBook} from "react-icons/ai";
 import { DiCode } from "react-icons/di";
 
 import {
@@ -55,6 +55,9 @@ const Header = () => (
       </SocialIcons>
       <SocialIcons href="https://instagram.com/koliko_official">
         <AiFillInstagram size="3rem" />
+      </SocialIcons>
+      <SocialIcons href="https://codeprophet.hashnode.dev">
+        <AiFillBook size="3rem" />
       </SocialIcons>
     </Div3>
   </Container>

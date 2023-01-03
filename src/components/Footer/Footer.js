@@ -1,5 +1,5 @@
 import React from "react";
-import { AiFillGithub, AiFillInstagram, AiFillLinkedin } from "react-icons/ai";
+import { AiFillGithub, AiFillInstagram, AiFillLinkedin, AiFillBook } from "react-icons/ai";
 
 import { SocialIcons } from "../Header/HeaderStyles";
 import {
@@ -44,6 +44,9 @@ const Footer = () => {
             <AiFillInstagram size="3rem" />
           </SocialIcons>
         </SocialContainer>
+        <SocialIcons href="https://codeprophet.hashnode.dev">
+        <AiFillBook size="3rem" />
+      </SocialIcons>
       </SocialIconsContainer>
     </FooterWrapper>
   );
