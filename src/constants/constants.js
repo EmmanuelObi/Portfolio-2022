@@ -25,7 +25,7 @@ export const projects = [
     description:
       "Whether you are sending money to loved ones back home, or getting payments from clients overseas, Wiremoney makes it super easy and fast with lower transfer fees",
     image: "/images/wm.jpeg",
-    tags: ["JavaScript", "CSS", "HTML", "Angular", "Bootstrap"],
+    tags: ["TypeScript","JavaScript", "CSS", "HTML", "Angular", "Bootstrap"],
     source: "https://bitbucket.org/opsz2/web/src/develop/",
     visit: "https://wiremoney.com.au",
     id: 2,
