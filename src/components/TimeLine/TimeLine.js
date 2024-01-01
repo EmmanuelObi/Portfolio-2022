@@ -68,10 +68,10 @@ const Timeline = () => {
       <br />
       <SectionTitle>About Me</SectionTitle>
       <SectionText>
-        I've been programming for over 2 years and tutoring for over 6 months.
-        I'm a Developer, Tutor and a Telecommunications Engineering Major who
+        I've been programming for 4 years and tutoring for 3.
+        A Frontend Engineer, and Telecommunications Engineering Major who
         loves to code. I love to think I've mastered the art of learning and
-        always loves to share my knowledge. I'm passionate about the tech
+        always love to share my knowledge. I'm passionate about the tech
         community and support inclusion for women in technology. I co-organize
         community events and speak at technology meetups on my campus.
       </SectionText>
