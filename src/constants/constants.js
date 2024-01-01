@@ -11,16 +11,6 @@ export const projects = [
     id: 0,
   },
   {
-    title: "Lara Beta Version",
-    description:
-      "Rebuilt using React with new and improved user interface, increased amount of features and more locations added.",
-    image: "/images/beta.jpeg",
-    tags: ["HTML5", "CSS3", "JavaScript", "React", "Bootstrap", "Service Workers", "PWA"],
-    source: "https://bitbucket.org/rp-dev0/lara_beta_frontend/src/develop/",
-    visit: "https://beta.lara.ng",
-    id: 1,
-  },
-  {
     title: "WireMoney",
     description:
       "Whether you are sending money to loved ones back home, or getting payments from clients overseas, Wiremoney makes it super easy and fast with lower transfer fees",
@@ -28,40 +18,50 @@ export const projects = [
     tags: ["TypeScript","JavaScript", "CSS", "HTML", "Angular", "Bootstrap"],
     source: "https://bitbucket.org/opsz2/web/src/develop/",
     visit: "https://wiremoney.com.au",
+    id: 1,
+  },
+  {
+    title: "Lara Version 2",
+    description:
+      "Rebuilt using React with new and improved user interface, increased amount of features and more locations added.",
+    image: "/images/beta.jpeg",
+    tags: ["HTML5", "CSS3", "JavaScript", "React", "Bootstrap", "Service Workers", "PWA"],
+    source: "https://bitbucket.org/rp-dev0/lara_beta_frontend/src/develop/",
+    visit: "https://beta.lara.ng",
     id: 2,
   },
-  {
-    title: "Global Accelerex",
-    description:
-      "Global Accelerex is the leading provider of electronic payment and financial technology solutions in Nigeria",
-    image: "/images/ga.jpeg",
-    tags: ["TypeScript", "CSS", "HTML", "React", "Material UI",],
-    source: "https://bitbucket.org/opsz2/ga-webclient/src/master/",
-    visit: "http://global-accelerex-web.herokuapp.com/",
-    id: 3,
-  },
-  {
-    title: "Web3 lottery game",
-    description:
-      "Bitokun (BITKN) is a decentralized lottery platform that lets users deposit cryptocurrency into pools to win daily prizes",
-    image: "/images/bt.jpeg",
-    tags: [
-      "TypeScript",
-      "CSS",
-      "HTML",
-      "React",
-      "NextJs",
-      "Tailwind",
-      "Moralis",
-      "Metamask",
-      "WalletConnect",
-      "Ethers",
-      "Wagmi"
-    ],
-    source: "https://github.com/Bitokun-Dev/bitokun-frontend",
-    visit: "https://bitokun.com/",
-    id: 4,
-  },
+  // {
+  //   title: "Global Accelerex",
+  //   description:
+  //     "Global Accelerex is the leading provider of electronic payment and financial technology solutions in Nigeria",
+  //   image: "/images/ga.jpeg",
+  //   tags: ["TypeScript", "CSS", "HTML", "React", "Material UI",],
+  //   source: "https://bitbucket.org/opsz2/ga-webclient/src/master/",
+  //   visit: "http://global-accelerex-web.herokuapp.com/",
+  //   id: 3,
+  // },
+  // {
+  //   title: "Web3 lottery game",
+  //   description:
+  //     "Bitokun (BITKN) is a decentralized lottery platform that lets users deposit cryptocurrency into pools to win daily prizes",
+  //   image: "/images/bt.jpeg",
+  //   tags: [
+  //     "TypeScript",
+  //     "CSS",
+  //     "HTML",
+  //     "React",
+  //     "NextJs",
+  //     "Tailwind",
+  //     "Moralis",
+  //     "Metamask",
+  //     "WalletConnect",
+  //     "Ethers",
+  //     "Wagmi"
+  //   ],
+  //   source: "https://github.com/Bitokun-Dev/bitokun-frontend",
+  //   visit: "https://bitokun.com/",
+  //   id: 4,
+  // },
 ];
 
 export const TimeLineData = [
