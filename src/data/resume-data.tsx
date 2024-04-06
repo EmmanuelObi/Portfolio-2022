@@ -25,9 +25,9 @@ export const RESUME_DATA = {
   location: "Lagos, Nigeria, WAT",
   locationLink: "https://www.google.com/maps/place/Lagos",
   about:
-    "Frontend Developer focused on building products with extra attention to detail",
+    "Software Developer focused on delivering products with extra attention to detail",
   summary:
-    "Skilled frontend developer with experience in designing, developing, and maintaining web applications. Achieved measurable success optimizing web applications to ensure a seamless experience for over 100,000 users. Adept at collaborating with cross-functional teams and delivering software on time and on budget.",
+    "Skilled software developer with 3+ years of experience building solutions across the logistics and finance industries. Proficient with Angular, React, and NodeJs. Achieved measurable success optimizing web applications to ensure a seamless experience for over 100,000 users. Adept at collaborating with cross-functional teams and delivering software on time and within budget.",
   avatarUrl: "https://avatars.githubusercontent.com/u/63916312?v=4",
   personalWebsiteUrl: "https://emmanuel-obi.vercel.app",
   contact: {
@@ -68,7 +68,7 @@ export const RESUME_DATA = {
       logo: ParabolLogo,
       start: "2022",
       end: "Present",
-      description: `Created reusable JavaScript code libraries, reducing development time for future projects by 50% and improving the efficiency of the development team. Utilized Redux for state management in React, resulting in a 25% reduction in code complexity and a 15% increase in team productivity. Collaborated with the backend engineers to develop a mobility algorithm in Python that ensures accurate and up-to-date directions are being provided to over 100,000 users.`,
+      description: `Created reusable JavaScript code libraries, reducing development time for future projects by 50% and improving the efficiency of the development team. Optimized Angular codebase, reducing load times by 12% and enhancing overall application performance. Collaborated with the backend engineers to develop a mobility algorithm in Python that ensures accurate and up-to-date directions are being provided to over 100,000 users.`,
     },
     {
       company: "Atlens Limited",
@@ -84,13 +84,12 @@ export const RESUME_DATA = {
   skills: [
     "JavaScript",
     "TypeScript",
-    "React/Next.js/Remix",
-    "HTML/CSS",
-    "Redux",
     "Angular",
+    "React/Next.js",
+    "NodeJs",
+    "Python(Django)",
     "Tailwind CSS",
     "Cypress",
-    "Python",
     "Rust",
   ],
   projects: [
