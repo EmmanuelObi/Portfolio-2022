@@ -116,6 +116,24 @@ export const RESUME_DATA = {
       },
     },
     {
+      title: "Authentication Service",
+      techStack: [
+        "Angular",
+        "TypeScript",
+        "NodeJs",
+        "ExpressJs",
+        "MongoDb",
+        "Tailwind Css",
+      ],
+      description:
+        "Fullstack Authentication Service for an access management platform. Built using Angular and NodeJs",
+      logo: ConsultlyLogo,
+      link: {
+        label: "auth-service-by-koliko",
+        href: "https://auth-service-by-koliko.vercel.app",
+      },
+    },
+    {
       title: "Lara Beta",
       techStack: [
         "React",
