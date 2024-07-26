@@ -25,9 +25,9 @@ export const RESUME_DATA = {
   location: "Lagos, Nigeria, WAT",
   locationLink: "https://www.google.com/maps/place/Lagos",
   about:
-    "Software Developer focused on delivering products with extra attention to detail",
+    "Software Engineer focused on delivering products with extra attention to detail",
   summary:
-    "Skilled software developer with 3+ years of experience building solutions across the logistics and finance industries. Proficient with Angular, React, and NodeJs. Achieved measurable success optimizing web applications to ensure a seamless experience for over 100,000 users. Adept at collaborating with cross-functional teams and delivering software on time and within budget.",
+    "Skilled Software Engineer with 4+ years of experience building solutions across the logistics and finance industries. Proficient with Angular, React, Django and NodeJs. Achieved measurable success optimizing web applications to ensure a seamless experience for over 100,000 users. Adept at collaborating with cross-functional teams and delivering software on time and within budget.",
   avatarUrl: "https://avatars.githubusercontent.com/u/63916312?v=4",
   personalWebsiteUrl: "https://emmanuel-obi.vercel.app",
   contact: {
@@ -64,7 +64,7 @@ export const RESUME_DATA = {
       company: "RoadPreppers Technologies",
       link: "https://lara.ng",
       badges: ["Remote", "USA"],
-      title: "Frontend Developer",
+      title: "Software Engineer",
       logo: ParabolLogo,
       start: "2022",
       end: "Present",
@@ -74,7 +74,7 @@ export const RESUME_DATA = {
       company: "Atlens Limited",
       link: "https://wiremoney.com.au",
       badges: ["Remote", "Lagos"],
-      title: "Frontend Developer",
+      title: "Software Engineer",
       logo: ClevertechLogo,
       start: "2020",
       end: "2022",
@@ -91,6 +91,7 @@ export const RESUME_DATA = {
     "Tailwind CSS",
     "Cypress",
     "Rust",
+    "Django",
   ],
   projects: [
     {
@@ -142,6 +143,8 @@ export const RESUME_DATA = {
         "JavaScript",
         "PWA",
         "Redux",
+        "Python",
+        "Django",
       ],
       description:
         "Meet Lara, your automated directions assistant for various locations in Nigeria.",
