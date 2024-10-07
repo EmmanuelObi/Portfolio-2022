@@ -25,9 +25,9 @@ export const RESUME_DATA = {
   location: "Lagos, Nigeria, WAT",
   locationLink: "https://www.google.com/maps/place/Lagos",
   about:
-    "Software Engineer focused on delivering products with extra attention to detail",
+    "Senior Software Engineer focused on building products with extra attention to detail",
   summary:
-    "Skilled Software Engineer with 4+ years of experience building solutions across the logistics and finance industries. Proficient with Angular, React, Django and NodeJs. Achieved measurable success optimizing web applications to ensure a seamless experience for over 100,000 users. Adept at collaborating with cross-functional teams and delivering software on time and within budget.",
+    "Skilled Software Engineer with experience designing, developing, and maintaining web applications. Achieved measurable success optimizing web applications to ensure a seamless experience for over 100,000 users. Adept at collaborating with cross-functional teams and delivering software on time and on budget.",
   avatarUrl: "https://avatars.githubusercontent.com/u/63916312?v=4",
   personalWebsiteUrl: "https://emmanuel-obi.vercel.app",
   contact: {
@@ -66,9 +66,9 @@ export const RESUME_DATA = {
       badges: ["Remote", "USA"],
       title: "Software Engineer",
       logo: ParabolLogo,
-      start: "2022",
+      start: "2021",
       end: "Present",
-      description: `Created reusable JavaScript code libraries, reducing development time for future projects by 50% and improving the efficiency of the development team. Optimized Angular codebase, reducing load times by 12% and enhancing overall application performance. Collaborated with the backend engineers to develop a mobility algorithm in Python that ensures accurate and up-to-date directions are being provided to over 100,000 users.`,
+      description: `Created reusable JavaScript code libraries, reducing development time for future projects by 50% and improving the efficiency of the development team. Utilized Redux for state management in React, resulting in a 25% reduction in code complexity and a 15% increase in team productivity. Collaborated with the backend engineers to develop a mobility algorithm in Python that ensures accurate and up-to-date directions are being provided to over 100,000 users.`,
     },
     {
       company: "Atlens Limited",
@@ -76,7 +76,7 @@ export const RESUME_DATA = {
       badges: ["Remote", "Lagos"],
       title: "Software Engineer",
       logo: ClevertechLogo,
-      start: "2020",
+      start: "2019",
       end: "2022",
       description: `Participated actively in code reviews and provided best practice solutions, which increased the website code efficiency of three client projects built using Angular and React by over 15% each. Designed detailed architectural and functional software requirement documents for various client projects to portray the quality and standard of the product being delivered. Efficiently interacted with APIs designed by the backend team to create and deliver a fully functional CMS using Typescript and React that improved customer acquisition and retention by 20%.`,
     },
@@ -84,12 +84,13 @@ export const RESUME_DATA = {
   skills: [
     "JavaScript",
     "TypeScript",
+    "React/Next.js/Remix",
+    "HTML/CSS",
+    "Redux",
     "Angular",
-    "React/Next.js",
-    "NodeJs",
-    "Python(Django)",
     "Tailwind CSS",
     "Cypress",
+    "Python",
     "Rust",
     "Django",
   ],
@@ -103,17 +104,6 @@ export const RESUME_DATA = {
       link: {
         label: "lara.ng",
         href: "https://lara.ng/",
-      },
-    },
-    {
-      title: "Wiremoney",
-      techStack: ["Angular", "TypeScript", "NgRx", "JavaScript"],
-      description:
-        "Wiremoney makes it super easy and fast to send money to loved ones or get payments from clients overseas with lower transfer fees",
-      logo: ConsultlyLogo,
-      link: {
-        label: "Wiremoney",
-        href: "https://wiremoney.com.au/",
       },
     },
     {
@@ -132,6 +122,17 @@ export const RESUME_DATA = {
       link: {
         label: "auth-service-by-koliko",
         href: "https://auth-service-by-koliko.vercel.app",
+      },
+    },
+    {
+      title: "Wiremoney",
+      techStack: ["Angular", "TypeScript", "NgRx", "JavaScript"],
+      description:
+        "Wiremoney makes it super easy and fast to send money to loved ones or get payments from clients overseas with lower transfer fees",
+      logo: ConsultlyLogo,
+      link: {
+        label: "Wiremoney",
+        href: "https://wiremoney.com.au/",
       },
     },
     {
