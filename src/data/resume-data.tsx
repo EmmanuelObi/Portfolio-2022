@@ -95,6 +95,17 @@ export const RESUME_DATA = {
     "Django",
   ],
   projects: [
+     {
+      title: "Verto Platform",
+      techStack: ["Angular", "Node", "Typescript", "AWS", "MySQL", "MongoDb"],
+      description:
+        "Global financial technology application enabling users to make cross border payments",
+      logo: ConsultlyLogo,
+      link: {
+        label: "verto",
+        href: "https://www.vertofx.com/",
+      },
+    },
     {
       title: "Lara.ng",
       techStack: ["JavaScript(ES6)", "PWA", "Service Workers", "HTML", "CSS"],
