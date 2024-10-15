@@ -77,7 +77,7 @@ export const RESUME_DATA = {
       title: "Software Engineer",
       logo: ClevertechLogo,
       start: "2019",
-      end: "2022",
+      end: "2021",
       description: `Participated actively in code reviews and provided best practice solutions, which increased the website code efficiency of three client projects built using Angular and React by over 15% each. Designed detailed architectural and functional software requirement documents for various client projects to portray the quality and standard of the product being delivered. Efficiently interacted with APIs designed by the backend team to create and deliver a fully functional CMS using Typescript and React that improved customer acquisition and retention by 20%.`,
     },
   ],
