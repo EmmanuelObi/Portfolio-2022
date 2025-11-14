@@ -71,10 +71,195 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    /* Soft gradient background with subtle grid */
+    @apply bg-background text-foreground antialiased;
+    background: radial-gradient(
+        circle at 20% 20%,
+        hsl(var(--primary) / 0.08),
+        transparent 60%
+      ),
+      radial-gradient(
+        circle at 80% 30%,
+        hsl(var(--accent) / 0.07),
+        transparent 55%
+      ),
+      linear-gradient(hsl(var(--background)), hsl(var(--background)));
+    position: relative;
   }
 }
 
+/* Print Styles */
 .print-force-new-page {
   page-break-before: always;
+}
+
+@media print {
+  .print\:hidden {
+    display: none !important;
+  }
+}
+
+/* Smooth Animations */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+
+  .animate-pulse-subtle {
+    animation: pulseSubtle 2s ease-in-out infinite;
+  }
+
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass {
+    @apply bg-white/70 dark:bg-gray-900/60 backdrop-blur-md border border-white/40 dark:border-gray-700/40 shadow-lg;
+  }
+
+  .title-gradient {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--accent)) 100%
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .prose-muted {
+    @apply text-sm leading-relaxed text-muted-foreground;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseSubtle {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+  }
+}
+
+/* Improved Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h1 {
+  @apply text-3xl md:text-4xl font-bold tracking-tight;
+}
+h2 {
+  @apply text-2xl md:text-3xl font-semibold tracking-tight;
+}
+h3 {
+  @apply text-xl font-semibold;
+}
+h4 {
+  @apply text-lg font-medium;
+}
+
+/* Typography scale utilities */
+.text-display-1 {
+  @apply text-4xl md:text-5xl font-bold tracking-tight;
+}
+.text-display-2 {
+  @apply text-3xl md:text-4xl font-semibold tracking-tight;
+}
+.text-heading {
+  @apply text-2xl font-semibold tracking-tight;
+}
+.text-subheading {
+  @apply text-xl font-medium;
+}
+.text-body {
+  @apply text-base leading-relaxed;
+}
+.text-body-sm {
+  @apply text-sm leading-relaxed;
+}
+.text-label {
+  @apply text-xs uppercase tracking-wide font-semibold;
+}
+.text-mono-xs {
+  @apply font-mono text-xs;
+}
+
+/* Default body font family override */
+body,
+.text-body,
+.text-body-sm {
+  font-family: var(--font-sans, "Raleway", sans-serif);
+}
+code,
+kbd,
+samp,
+.text-mono-xs {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Utility spacing rhythm */
+.stack-sm > * + * {
+  @apply mt-2;
+}
+.stack-md > * + * {
+  @apply mt-4;
+}
+.stack-lg > * + * {
+  @apply mt-6;
+}
+
+/* Glass divider */
+.divider {
+  @apply h-px w-full bg-gradient-to-r from-transparent via-border to-transparent;
+}
+
+/* Better link hover states */
+a {
+  @apply transition-smooth;
+}
+
+a:hover {
+  @apply opacity-80;
+}
+
+/* Card hover effects */
+.card-hover {
+  @apply transition-smooth hover:shadow-lg hover:-translate-y-1;
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  @apply outline-2 outline-offset-2 outline-primary;
 }
