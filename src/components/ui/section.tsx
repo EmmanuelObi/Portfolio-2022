@@ -1,11 +1,11 @@
 "use client";
 import { cn } from "@/lib/utils";
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 
-export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface SectionProps extends Omit<HTMLMotionProps<"section">, "initial" | "whileInView" | "viewport" | "transition"> {}
 
-export function Section({ className, ...props }: BadgeProps) {
+export function Section({ className, ...props }: SectionProps) {
   return (
     <motion.section
       initial={{ opacity: 0, y: 24 }}
