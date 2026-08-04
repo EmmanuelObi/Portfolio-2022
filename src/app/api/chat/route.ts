@@ -7,13 +7,32 @@ import {
   getRecentContext,
 } from "@/lib/chatbot/conversationManager";
 
-// Force dynamic rendering
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
+const MAX_MESSAGE_LENGTH = 500;
+
+interface ChatTurn {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { message, sessionId } = await request.json();
+    const body = await request.json();
+    const {
+      message,
+      sessionId,
+      recentTurns,
+      lastIntent,
+      lastEntities,
+    }: {
+      message?: unknown;
+      sessionId?: string;
+      recentTurns?: ChatTurn[];
+      lastIntent?: string;
+      lastEntities?: string[];
+    } = body;
 
     if (!message || typeof message !== "string") {
       return NextResponse.json(
@@ -22,36 +41,58 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Use sessionId or create one
+    const trimmed = message.trim();
+    if (!trimmed) {
+      return NextResponse.json(
+        { error: "Message cannot be empty" },
+        { status: 400 }
+      );
+    }
+
+    if (trimmed.length > MAX_MESSAGE_LENGTH) {
+      return NextResponse.json(
+        { error: `Message must be ${MAX_MESSAGE_LENGTH} characters or fewer` },
+        { status: 400 }
+      );
+    }
+
     const session = sessionId || `session_${Date.now()}`;
 
-    // Get recent conversation context for better responses
-    const context = getRecentContext(session);
+    // Prefer client-supplied context (survives serverless); fall back to in-memory
+    const cached = getRecentContext(session);
+    const hints = {
+      lastIntent: lastIntent || cached.lastIntent,
+      lastEntities: lastEntities || cached.lastEntities,
+    };
 
-    // Process the user's query
-    const processedQuery = processQuery(message);
+    const processedQuery = processQuery(trimmed, hints);
+    const response = generateResponse(processedQuery, {
+      ...hints,
+      recentTurns: Array.isArray(recentTurns) ? recentTurns.slice(-8) : undefined,
+    });
 
-    // Generate intelligent response
-    const response = generateResponse(processedQuery);
-
-    // Save messages to conversation history
-    addMessage(session, "user", message);
+    addMessage(session, "user", trimmed);
     addMessage(session, "assistant", response.message);
-
-    // Update conversation context
     updateContext(session, processedQuery.intent, processedQuery.entities);
 
-    return NextResponse.json({
+    const payload: Record<string, unknown> = {
       message: response.message,
       suggestions: response.suggestions,
       sessionId: session,
-      debug: {
+      lastIntent: processedQuery.intent,
+      lastEntities: processedQuery.entities,
+    };
+
+    if (process.env.NODE_ENV === "development") {
+      payload.debug = {
         intent: processedQuery.intent,
         confidence: processedQuery.confidence,
         keywords: processedQuery.keywords,
         entities: processedQuery.entities,
-      },
-    });
+      };
+    }
+
+    return NextResponse.json(payload);
   } catch (error) {
     console.error("Chat API error:", error);
     return NextResponse.json(

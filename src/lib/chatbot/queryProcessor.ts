@@ -1,6 +1,10 @@
 /**
- * Query Processor - Analyzes user input to understand intent and extract relevant information
+ * Query Processor - Analyzes user input to understand intent and extract entities
+ * Entity patterns are derived from RESUME_DATA so new projects/jobs stay in sync.
  */
+
+import { RESUME_DATA } from "@/data/resume-data";
+import { escapeRegExp, nameTokens } from "./resumeForChat";
 
 export interface ProcessedQuery {
   intent: QueryIntent;
@@ -9,6 +13,11 @@ export interface ProcessedQuery {
   isQuestion: boolean;
   originalQuery: string;
   confidence: number;
+}
+
+export interface ConversationHints {
+  lastIntent?: string;
+  lastEntities?: string[];
 }
 
 export enum QueryIntent {
@@ -26,7 +35,6 @@ export enum QueryIntent {
   UNKNOWN = "unknown",
 }
 
-// Common words to filter out (stop words)
 const STOP_WORDS = new Set([
   "a",
   "an",
@@ -75,26 +83,98 @@ const STOP_WORDS = new Set([
   "their",
   "your",
   "my",
+  "his",
+  "her",
 ]);
 
-// Intent patterns for classification
+const COMPANY_SYNONYMS: Record<string, string[]> = {
+  vertofx: ["verto", "vert fx", "vertfx"],
+  roadpreppers: ["road preppers", "lara"],
+  atlens: ["wiremoney", "wire money"],
+};
+
+const PROJECT_SYNONYMS: Record<string, string[]> = {
+  sorstain: [],
+  obichops: ["obi chops", "chopspace"],
+  lara: ["directions assistant"],
+  "verto platform": ["verto"],
+};
+
+function buildAlternation(terms: string[]): string {
+  const unique = Array.from(
+    new Set(terms.filter(Boolean).map((t) => t.trim().toLowerCase()))
+  ).sort((a, b) => b.length - a.length);
+  return unique.map((t) => escapeRegExp(t).replace(/\s+/g, "\\s*")).join("|");
+}
+
+function buildCompanyTerms(): string[] {
+  const terms: string[] = [];
+  RESUME_DATA.work.forEach((job) => {
+    nameTokens(job.company).forEach((t) => terms.push(t));
+    const key = job.company.toLowerCase().replace(/[^a-z0-9]/g, "");
+    Object.entries(COMPANY_SYNONYMS).forEach(([canon, syns]) => {
+      if (key.includes(canon)) terms.push(...syns, canon);
+    });
+  });
+  return terms;
+}
+
+function buildProjectTerms(): string[] {
+  const terms: string[] = [];
+  RESUME_DATA.projects.forEach((project) => {
+    nameTokens(project.title).forEach((t) => terms.push(t));
+    const key = project.title.toLowerCase().replace(/[^a-z0-9]/g, "");
+    Object.entries(PROJECT_SYNONYMS).forEach(([canon, syns]) => {
+      if (key.includes(canon.replace(/\s+/g, ""))) {
+        terms.push(...syns, canon);
+      }
+    });
+  });
+  return terms;
+}
+
+function buildSkillTerms(): string[] {
+  return RESUME_DATA.skills.map((s) => s.toLowerCase());
+}
+
+const companyAlt = buildAlternation(buildCompanyTerms());
+const projectAlt = buildAlternation(buildProjectTerms());
+const skillAlt = buildAlternation([
+  ...buildSkillTerms(),
+  "microservice",
+  "microservices",
+  "frontend",
+  "backend",
+  "fullstack",
+  "full stack",
+  "machine learning",
+  "lambda",
+]);
+
+const ENTITY_PATTERNS = {
+  companies: new RegExp(`\\b(?:${companyAlt})\\b`, "gi"),
+  projects: new RegExp(`\\b(?:${projectAlt})\\b`, "gi"),
+  technologies: new RegExp(`\\b(?:${skillAlt})\\b`, "gi"),
+};
+
 const INTENT_PATTERNS: Partial<Record<QueryIntent, RegExp[]>> = {
   [QueryIntent.GREETING]: [
     /\b(hi|hello|hey|greetings|good\s+(morning|afternoon|evening))\b/i,
   ],
   [QueryIntent.EXPERIENCE]: [
     /\b(work|job|experience|worked|position|role|company|companies|career|employment)\b/i,
-    /\b(vertofx|roadpreppers|atlens|lara)\b/i,
-    /\b(what\s+(did|have)\s+you\s+(do|done|work))\b/i,
+    new RegExp(`\\b(?:${companyAlt})\\b`, "i"),
+    /\b(what\s+(did|have)\s+(you|he)\s+(do|done|work))\b/i,
   ],
   [QueryIntent.SKILLS]: [
     /\b(skill|skills|technology|technologies|tech\s+stack|programming|language|framework|tool)\b/i,
-    /\b(typescript|react|angular|node|python|aws|django)\b/i,
+    new RegExp(`\\b(?:${skillAlt})\\b`, "i"),
     /\b(know|proficient|familiar|good\s+at)\b/i,
   ],
   [QueryIntent.PROJECTS]: [
     /\b(project|projects|built|build|created|developed|application|app)\b/i,
     /\b(portfolio|work\s+on|side\s+project)\b/i,
+    new RegExp(`\\b(?:${projectAlt})\\b`, "i"),
   ],
   [QueryIntent.EDUCATION]: [
     /\b(education|degree|university|college|study|studied|graduated|school|academic)\b/i,
@@ -113,60 +193,55 @@ const INTENT_PATTERNS: Partial<Record<QueryIntent, RegExp[]>> = {
     /\b(hashnode|opencv|hoisting|react\s+mistake)\b/i,
   ],
   [QueryIntent.RESEARCH]: [
-    /\b(research|researcher|study|studies|academic|under\s+review|paper|computer\s+vision|trustworthy\s+ai|ml\s+systems|machine\s+learning)\b/i,
+    /\b(research|researcher|computer\s+vision|trustworthy\s+ai|ml\s+systems|machine\s+learning)\b/i,
     /\b(opencv|plate\s+number|apnr|recognition|vehicle\s+detection|counting)\b/i,
   ],
   [QueryIntent.CONTACT]: [
-    /\b(contact|email|phone|reach|linkedin|github|social|connect|hire)\b/i,
-    /\b(get\s+in\s+touch|talk\s+to|message|call)\b/i,
+    /\b(contact|email|reach|linkedin|github|social|connect|hire)\b/i,
+    /\b(get\s+in\s+touch|talk\s+to|message)\b/i,
   ],
   [QueryIntent.GENERAL]: [
-    /\b(tell\s+me\s+about\s+yourself|who\s+are\s+you|introduce|background|summary)\b/i,
-    /\b(what\s+do\s+you\s+do|your\s+role)\b/i,
+    /\b(tell\s+me\s+about\s+(yourself|him|emmanuel)|who\s+(are\s+you|is\s+he)|introduce|background|summary)\b/i,
+    /\b(what\s+do\s+(you|he)\s+do|your\s+role)\b/i,
   ],
 };
 
-// Company/project entity patterns
-const ENTITY_PATTERNS = {
-  companies:
-    /\b(vertofx|vert\s*fx|roadpreppers|road\s*preppers|atlens|yc\s+2019)\b/gi,
-  projects: /\b(lara|wiremoney|wire\s*money|opencv|plate\s+recognition)\b/gi,
-  technologies:
-    /\b(typescript|javascript|react|angular|node\.?js|python|django|aws|openai|vertexai|kafka|redis|mongodb|dynamodb|express)\b/gi,
-  skills:
-    /\b(microservice|api|frontend|backend|fullstack|full[- ]stack|ai|ml|machine\s+learning)\b/gi,
-};
+const FOLLOW_UP_PATTERN =
+  /^(tell\s+me\s+more|more(\s+details)?|what\s+about\s+(that|it|them)|and(\s+\w+){0,4}\??|continue|go\s+on|elaborate)$/i;
 
 /**
  * Process user query to extract intent, keywords, and entities
  */
-export function processQuery(query: string): ProcessedQuery {
+export function processQuery(
+  query: string,
+  hints?: ConversationHints
+): ProcessedQuery {
   const normalized = query.toLowerCase().trim();
   const isQuestion =
     /\?$/.test(query) ||
     /^(what|where|when|why|how|who|can|do|does|is|are)/i.test(query);
 
-  // Extract keywords (non-stop words)
   const words = normalized
     .replace(/[^\w\s]/g, " ")
     .split(/\s+/)
     .filter((word) => word.length > 2 && !STOP_WORDS.has(word));
 
-  // Extract entities
   const entities: string[] = [];
   Object.values(ENTITY_PATTERNS).forEach((pattern) => {
+    // Reset lastIndex for global regexes
+    pattern.lastIndex = 0;
     const matches = query.match(pattern);
     if (matches) {
       entities.push(...matches.map((m) => m.toLowerCase()));
     }
   });
 
-  // Detect intent
   let maxConfidence = 0;
   let detectedIntent = QueryIntent.UNKNOWN;
 
   for (const [intent, patterns] of Object.entries(INTENT_PATTERNS)) {
     for (const pattern of patterns) {
+      pattern.lastIndex = 0;
       if (pattern.test(normalized)) {
         const confidence = calculateConfidence(normalized, pattern);
         if (confidence > maxConfidence) {
@@ -177,7 +252,26 @@ export function processQuery(query: string): ProcessedQuery {
     }
   }
 
-  // If no specific intent found but has relevant keywords, classify as general
+  // Follow-up: reuse last intent when the message is a short continuation
+  const isFollowUp =
+    FOLLOW_UP_PATTERN.test(normalized) ||
+    (words.length <= 4 &&
+      /\b(more|that|those|them|also|and)\b/i.test(normalized) &&
+      !!hints?.lastIntent);
+
+  if (
+    isFollowUp &&
+    hints?.lastIntent &&
+    hints.lastIntent !== QueryIntent.UNKNOWN &&
+    hints.lastIntent !== QueryIntent.GREETING
+  ) {
+    detectedIntent = hints.lastIntent as QueryIntent;
+    maxConfidence = Math.max(maxConfidence, 0.75);
+    if (hints.lastEntities?.length) {
+      entities.push(...hints.lastEntities);
+    }
+  }
+
   if (detectedIntent === QueryIntent.UNKNOWN && words.length > 0) {
     detectedIntent = QueryIntent.GENERAL;
     maxConfidence = 0.3;
@@ -185,30 +279,27 @@ export function processQuery(query: string): ProcessedQuery {
 
   return {
     intent: detectedIntent,
-    keywords: Array.from(new Set(words)), // Remove duplicates
-    entities: Array.from(new Set(entities)), // Remove duplicates
+    keywords: Array.from(new Set(words)),
+    entities: Array.from(new Set(entities)),
     isQuestion,
     originalQuery: query,
     confidence: maxConfidence,
   };
 }
 
-/**
- * Calculate confidence score for pattern match
- */
 function calculateConfidence(text: string, pattern: RegExp): number {
+  pattern.lastIndex = 0;
   const matches = text.match(pattern);
   if (!matches) return 0;
 
-  // Base confidence
   let confidence = 0.5;
-
-  // Boost confidence for multiple matches
   if (matches.length > 1) {
     confidence += 0.1 * Math.min(matches.length - 1, 3);
   }
 
-  // Boost for specific entity mentions
+  ENTITY_PATTERNS.companies.lastIndex = 0;
+  ENTITY_PATTERNS.projects.lastIndex = 0;
+  ENTITY_PATTERNS.technologies.lastIndex = 0;
   if (ENTITY_PATTERNS.companies.test(text)) confidence += 0.1;
   if (ENTITY_PATTERNS.projects.test(text)) confidence += 0.1;
   if (ENTITY_PATTERNS.technologies.test(text)) confidence += 0.1;
@@ -216,14 +307,10 @@ function calculateConfidence(text: string, pattern: RegExp): number {
   return Math.min(confidence, 1.0);
 }
 
-/**
- * Extract specific information requests from query
- */
 export function extractInfoRequests(query: ProcessedQuery): string[] {
   const requests: string[] = [];
   const text = query.originalQuery.toLowerCase();
 
-  // Specific information patterns
   if (/\b(how\s+long|duration|years?\s+of\s+experience)\b/i.test(text)) {
     requests.push("duration");
   }
@@ -236,7 +323,7 @@ export function extractInfoRequests(query: ProcessedQuery): string[] {
   if (/\b(first|started|beginning|initial)\b/i.test(text)) {
     requests.push("first");
   }
-  if (/\b(best|top|greatest|most\s+proud)\b/i.test(text)) {
+  if (/\b(best|top|greatest|most\s+proud|more)\b/i.test(text)) {
     requests.push("highlight");
   }
   if (

@@ -1,5 +1,6 @@
 /**
- * Conversation Manager - Tracks conversation history and context for multi-turn conversations
+ * Conversation Manager - Best-effort in-memory cache (not reliable on serverless).
+ * Primary context for follow-ups comes from the client via recentTurns / lastIntent.
  */
 
 export interface Message {
@@ -18,9 +19,6 @@ export interface ConversationContext {
 
 const conversations = new Map<string, ConversationContext>();
 
-/**
- * Create or get conversation context
- */
 export function getConversation(sessionId: string): ConversationContext {
   if (!conversations.has(sessionId)) {
     conversations.set(sessionId, {
@@ -31,9 +29,6 @@ export function getConversation(sessionId: string): ConversationContext {
   return conversations.get(sessionId)!;
 }
 
-/**
- * Add message to conversation
- */
 export function addMessage(
   sessionId: string,
   role: "user" | "assistant",
@@ -46,16 +41,12 @@ export function addMessage(
     content,
     timestamp: Date.now(),
   });
-  
-  // Keep only last 20 messages for memory efficiency
+
   if (conversation.messages.length > 20) {
     conversation.messages = conversation.messages.slice(-20);
   }
 }
 
-/**
- * Update conversation context
- */
 export function updateContext(
   sessionId: string,
   intent?: string,
@@ -66,23 +57,14 @@ export function updateContext(
   if (entities) conversation.lastEntities = entities;
 }
 
-/**
- * Clear conversation
- */
 export function clearConversation(sessionId: string): void {
   conversations.delete(sessionId);
 }
 
-/**
- * Generate unique message ID
- */
 function generateMessageId(): string {
-  return `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  return `msg_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 }
 
-/**
- * Get recent context for follow-up questions
- */
 export function getRecentContext(sessionId: string): {
   lastIntent?: string;
   lastEntities?: string[];

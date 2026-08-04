@@ -1,110 +1,90 @@
 /**
- * Response Generator - Creates natural language responses based on query analysis and resume data
+ * Response Generator - Creates responses from processed queries + resume data
  */
 
-import { RESUME_DATA } from "@/data/resume-data";
+import {
+  getStructuredResumeData,
+  type StructuredResumeData,
+} from "./resumeForChat";
 import {
   ProcessedQuery,
   QueryIntent,
   extractInfoRequests,
+  type ConversationHints,
 } from "./queryProcessor";
 
 export interface ChatResponse {
   message: string;
   suggestions?: string[];
-  data?: any;
+  data?: unknown;
 }
 
-// Helper function to get structured data for chatbot (server-side compatible)
-function getStructuredResumeData() {
-  return {
-    personalInfo: {
-      name: RESUME_DATA.name,
-      title: RESUME_DATA.about,
-      location: RESUME_DATA.location,
-      summary: RESUME_DATA.summary,
-      contact: RESUME_DATA.contact,
-    },
-    experience: RESUME_DATA.work.map((job) => ({
-      company: job.company,
-      title: job.title,
-      duration: `${job.start} - ${job.end}`,
-      description: job.description,
-      location: job.badges.join(", "),
-    })),
-    education: RESUME_DATA.education.map((edu) => ({
-      school: edu.school,
-      degree: edu.degree,
-      duration: `${edu.start} - ${edu.end}`,
-      gpa: "gpa" in edu ? edu.gpa : undefined,
-      additionalInfo: "additionalInfo" in edu ? edu.additionalInfo : undefined,
-    })),
-    skills: RESUME_DATA.skills,
-    projects: RESUME_DATA.projects.map((project) => ({
-      title: project.title,
-      description: project.description,
-      technologies: project.techStack,
-      link: "link" in project ? project.link.href : undefined,
-    })),
-    certificates: "certificates" in RESUME_DATA ? RESUME_DATA.certificates : [],
-    publications: "publications" in RESUME_DATA ? RESUME_DATA.publications : [],
-    awards: "awards" in RESUME_DATA ? RESUME_DATA.awards : [],
-    researchInterests:
-      "researchInterests" in RESUME_DATA ? RESUME_DATA.researchInterests : [],
-    researchProjects:
-      "researchProjects" in RESUME_DATA ? RESUME_DATA.researchProjects : [],
-  };
+export interface ResponseContext extends ConversationHints {
+  recentTurns?: { role: "user" | "assistant"; content: string }[];
+}
+
+const DEFAULT_SUGGESTIONS = [
+  "What's his experience at VertoFx?",
+  "Tell me about Sorstain",
+  "What technologies does he work with?",
+  "Show me his projects",
+];
+
+function matchesEntity(haystack: string, entity: string): boolean {
+  const h = haystack.toLowerCase();
+  const e = entity.toLowerCase().trim();
+  if (!e) return false;
+  return h.includes(e) || e.includes(h.split(/[\s(]/)[0]);
+}
+
+function firstSentence(text: string): string {
+  const match = text.match(/^[^.!?]+[.!?]?/);
+  return match ? match[0].trim() : text.slice(0, 160).trim();
 }
 
 /**
- * Generate response based on processed query
+ * Generate response based on processed query and optional conversation context
  */
-export function generateResponse(query: ProcessedQuery): ChatResponse {
+export function generateResponse(
+  query: ProcessedQuery,
+  context?: ResponseContext
+): ChatResponse {
   const resumeData = getStructuredResumeData();
   const infoRequests = extractInfoRequests(query);
+
+  // Merge last entities from context when following up
+  if (context?.lastEntities?.length && query.entities.length === 0) {
+    query = { ...query, entities: [...context.lastEntities] };
+  }
 
   switch (query.intent) {
     case QueryIntent.GREETING:
       return generateGreeting();
-
     case QueryIntent.EXPERIENCE:
       return generateExperienceResponse(query, resumeData, infoRequests);
-
     case QueryIntent.SKILLS:
       return generateSkillsResponse(query, resumeData);
-
     case QueryIntent.PROJECTS:
       return generateProjectsResponse(query, resumeData);
-
     case QueryIntent.EDUCATION:
       return generateEducationResponse(resumeData);
-
     case QueryIntent.CERTIFICATES:
       return generateCertificatesResponse(resumeData);
-
     case QueryIntent.AWARDS:
       return generateAwardsResponse(resumeData);
-
     case QueryIntent.PUBLICATIONS:
       return generatePublicationsResponse(resumeData);
-
     case QueryIntent.RESEARCH:
       return generateResearchResponse(resumeData);
-
     case QueryIntent.CONTACT:
       return generateContactResponse(resumeData);
-
     case QueryIntent.GENERAL:
       return generateGeneralResponse(resumeData);
-
     default:
-      return generateFallbackResponse(query);
+      return generateFallbackResponse(query, resumeData);
   }
 }
 
-/**
- * Greeting responses
- */
 function generateGreeting(): ChatResponse {
   const greetings = [
     "Hi! I'm Emmanuel's AI assistant. I can help you learn about his experience, skills, projects, and more. What would you like to know?",
@@ -114,55 +94,41 @@ function generateGreeting(): ChatResponse {
 
   return {
     message: greetings[Math.floor(Math.random() * greetings.length)],
-    suggestions: [
-      "What's his experience at VertoFx?",
-      "Tell me about his technical skills",
-      "Show me his most impactful projects",
-      "What achievements has he earned?",
-    ],
+    suggestions: DEFAULT_SUGGESTIONS,
   };
 }
 
-/**
- * Experience responses
- */
 function generateExperienceResponse(
   query: ProcessedQuery,
-  resumeData: ReturnType<typeof getStructuredResumeData>,
+  resumeData: StructuredResumeData,
   infoRequests: string[]
 ): ChatResponse {
   const { experience } = resumeData;
 
-  // Check for specific company mentions
   const mentionedCompany = query.entities.find((e) =>
-    experience.some((exp) => exp.company.toLowerCase().includes(e))
+    experience.some((exp) => matchesEntity(exp.company, e))
   );
 
   if (mentionedCompany) {
     const exp = experience.find((e) =>
-      e.company.toLowerCase().includes(mentionedCompany)
+      matchesEntity(e.company, mentionedCompany)
     );
     if (exp) {
       return {
-        message: `At ${exp.company}, Emmanuel worked as a ${exp.title} (${exp.duration}). ${exp.description}`,
+        message: `At **${exp.company}**, Emmanuel worked as a ${exp.title} (${exp.duration}).\n\n${exp.description}`,
         suggestions: [
-          "What were his biggest achievements there?",
-          "What technologies did he use?",
-          "Tell me about his other roles",
+          "What were his biggest achievements?",
+          "Tell me about Sorstain",
+          "What technologies does he use?",
         ],
       };
     }
   }
 
-  // Current/recent experience
   if (infoRequests.includes("current")) {
     const current = experience[0];
     return {
-      message: `Emmanuel is currently a ${current.title} at ${
-        current.company
-      }, where he's been since ${
-        current.duration.split(" - ")[0]
-      }. He led the design and implementation of an AI-powered onboarding flow that increased user activation by 60% and reduced onboarding time from 2 weeks to just 1 day. He also built retention workflows that recovered over $2M in revenue within 48 hours!`,
+      message: `Emmanuel is currently a **${current.title}** at **${current.company}** (since ${current.start}).\n\n${current.description}`,
       suggestions: [
         "What technologies does he specialize in?",
         "Show me his side projects",
@@ -171,13 +137,10 @@ function generateExperienceResponse(
     };
   }
 
-  // First/early experience
   if (infoRequests.includes("first")) {
     const first = experience[experience.length - 1];
     return {
-      message: `Emmanuel started his career at ${first.company} as a ${
-        first.title
-      } (${first.duration}). ${first.description.substring(0, 200)}...`,
+      message: `Emmanuel started his career at **${first.company}** as a ${first.title} (${first.duration}).\n\n${first.description}`,
       suggestions: [
         "How has his career evolved since?",
         "What's his current role?",
@@ -186,36 +149,33 @@ function generateExperienceResponse(
     };
   }
 
-  // Achievements focus
   if (
     infoRequests.includes("achievements") ||
     query.keywords.includes("achieve") ||
-    query.keywords.includes("impact")
+    query.keywords.includes("impact") ||
+    query.keywords.includes("achievement")
   ) {
+    const bullets = experience
+      .map((exp) => `• **${exp.company}**: ${firstSentence(exp.description)}`)
+      .join("\n");
+
     return {
-      message: `Emmanuel has achieved remarkable results throughout his career:
-
-• At VertoFx: Led AI-powered onboarding that achieved 60% activation increase and recovered $2M+ in revenue within 48 hours
-• At RoadPreppers: Built features supporting 10x user growth, reduced development time by 50%
-• At Atlens: Improved code efficiency by 15%+ and contributed to 20% increase in customer acquisition
-
-He specializes in product growth, onboarding optimization, and building scalable systems.`,
+      message: `Emmanuel has delivered measurable impact across his roles:\n\n${bullets}`,
       suggestions: [
         "What technologies and tools does he use?",
-        "Show me his most impressive projects",
+        "Tell me about Sorstain",
         "What certifications has he earned?",
       ],
     };
   }
 
-  // General experience overview
   const totalYears = calculateYearsOfExperience(experience);
   const companies = experience.map((e) => e.company).join(", ");
 
   return {
-    message: `Emmanuel has ${totalYears}+ years of experience as a software engineer, having worked at ${companies}. He specializes in product growth, AI-powered features, and building scalable systems. His most recent role at VertoFx (YC 2019) focuses on implementing AI-driven onboarding and retention strategies that have delivered exceptional results.`,
+    message: `Emmanuel has ${totalYears}+ years of experience as a software engineer, having worked at ${companies}. He specializes in product growth, AI-powered features, and building scalable systems.\n\nHis most recent role at **${experience[0].company}** is **${experience[0].title}**.`,
     suggestions: [
-      "What's his role at VertoFx?",
+      `What's his role at ${experience[0].company.split(" ")[0]}?`,
       "What are his biggest career achievements?",
       "Show me his technical stack",
     ],
@@ -223,88 +183,89 @@ He specializes in product growth, onboarding optimization, and building scalable
   };
 }
 
-/**
- * Skills responses
- */
 function generateSkillsResponse(
   query: ProcessedQuery,
-  resumeData: ReturnType<typeof getStructuredResumeData>
+  resumeData: StructuredResumeData
 ): ChatResponse {
-  const { skills } = resumeData;
+  const { skills, projects } = resumeData;
 
-  // Check for specific technology mentions
   const mentionedTech = query.entities.find((e) =>
-    skills.some((skill) => skill.toLowerCase().includes(e))
+    skills.some((skill) => matchesEntity(skill, e))
   );
 
   if (mentionedTech) {
-    const hasSkill = skills.some((s) =>
-      s.toLowerCase().includes(mentionedTech.toLowerCase())
-    );
-    if (hasSkill) {
-      return {
-        message: `Yes, Emmanuel has extensive experience with ${mentionedTech}! It's part of his core tech stack. He's used it across multiple projects including VertoFx, LARA, and WireMoney.`,
-        suggestions: [
-          "What other technologies is he proficient in?",
-          "Show me projects where he used this",
-          "Tell me about his experience",
-        ],
-      };
-    }
+    const skill = skills.find((s) => matchesEntity(s, mentionedTech));
+    const relatedProjects = projects
+      .filter((p) =>
+        p.technologies.some((t) => matchesEntity(t, mentionedTech))
+      )
+      .map((p) => p.title);
+
+    const projectNote =
+      relatedProjects.length > 0
+        ? `\n\nYou'll also see it in projects like ${relatedProjects
+            .slice(0, 3)
+            .join(", ")}.`
+        : "";
+
+    return {
+      message: `Yes — **${skill ?? mentionedTech}** is part of Emmanuel's core stack.${projectNote}`,
+      suggestions: [
+        "What other technologies is he proficient in?",
+        "Show me his projects",
+        "Tell me about his experience",
+      ],
+    };
   }
 
-  // Categorize skills
   const frontend = skills.filter((s) =>
-    /react|angular|typescript|javascript/i.test(s)
+    /react|angular|typescript|javascript|next/i.test(s)
   );
-  const backend = skills.filter((s) => /node|express|python|django/i.test(s));
-  const ai = skills.filter((s) => /openai|vertexai|ai|ml/i.test(s));
+  const backend = skills.filter((s) =>
+    /node|express|python|django/i.test(s)
+  );
+  const ai = skills.filter((s) => /openai|vertex|opencv|ai|ml/i.test(s));
   const cloud = skills.filter((s) =>
-    /aws|redis|kafka|dynamodb|mongodb/i.test(s)
+    /aws|redis|kafka|dynamodb|mongodb|mysql|sqs|lambda/i.test(s)
   );
 
   return {
     message: `Emmanuel is a full-stack engineer with expertise across multiple domains:
 
-**Frontend:** ${frontend.join(", ")}
-**Backend:** ${backend.join(", ")}
-**AI/ML:** ${ai.join(", ")}
-**Cloud & Infrastructure:** ${cloud.join(", ")}
+**Frontend:** ${frontend.join(", ") || "—"}
+**Backend:** ${backend.join(", ") || "—"}
+**AI/ML:** ${ai.join(", ") || "—"}
+**Cloud & Data:** ${cloud.join(", ") || "—"}
 
 He's particularly strong in building scalable systems, AI-powered features, and product growth initiatives.`,
     suggestions: [
       "Show me projects using these technologies",
+      "Tell me about Sorstain",
       "What's his most impressive achievement?",
-      "Tell me about his AI/ML work",
     ],
     data: { skills },
   };
 }
 
-/**
- * Projects responses
- */
 function generateProjectsResponse(
   query: ProcessedQuery,
-  resumeData: ReturnType<typeof getStructuredResumeData>
+  resumeData: StructuredResumeData
 ): ChatResponse {
   const { projects } = resumeData;
 
-  // Check for specific project mentions
   const mentionedProject = query.entities.find((e) =>
-    projects.some((p) => p.title.toLowerCase().includes(e))
+    projects.some((p) => matchesEntity(p.title, e))
   );
 
   if (mentionedProject) {
     const project = projects.find((p) =>
-      p.title.toLowerCase().includes(mentionedProject)
+      matchesEntity(p.title, mentionedProject)
     );
     if (project) {
-      const techStack = project.technologies.join(", ");
       return {
         message: `**${project.title}**: ${project.description}
 
-Built with: ${techStack}${
+Built with: ${project.technologies.join(", ")}${
           project.link ? `\n\nCheck it out: ${project.link}` : ""
         }`,
         suggestions: [
@@ -316,38 +277,32 @@ Built with: ${techStack}${
     }
   }
 
-  // General projects overview
   const projectList = projects
     .map((p) => `• **${p.title}**: ${p.description}`)
     .join("\n\n");
 
   return {
-    message: `Emmanuel has built several impressive projects:
-
-${projectList}
-
-Each project demonstrates his ability to build scalable, user-focused applications.`,
+    message: `Emmanuel has built several projects:\n\n${projectList}`,
     suggestions: [
-      "What's his role at VertoFx?",
+      "Tell me about Sorstain",
+      "Tell me about ObiChops",
       "What are his core technologies?",
-      "Tell me about his achievements",
     ],
     data: { projects },
   };
 }
 
-/**
- * Education responses
- */
 function generateEducationResponse(
-  resumeData: ReturnType<typeof getStructuredResumeData>
+  resumeData: StructuredResumeData
 ): ChatResponse {
   const edu = resumeData.education[0];
 
   return {
-    message: `Emmanuel holds a ${edu.degree} from ${edu.school} (${edu.duration}).
+    message: `Emmanuel holds a ${edu.degree} from **${edu.school}** (${edu.duration}).
 
-He graduated with an impressive ${edu.gpa}, placing him in the top 1% of his class. During his time there, he served as a ${edu.additionalInfo}.`,
+${edu.gpa ? `Academic standing: ${edu.gpa}.` : ""}${
+      edu.additionalInfo ? ` During his time there, he served as a ${edu.additionalInfo}.` : ""
+    }`,
     suggestions: [
       "What certifications has he earned?",
       "Tell me about his work experience",
@@ -357,29 +312,22 @@ He graduated with an impressive ${edu.gpa}, placing him in the top 1% of his cla
   };
 }
 
-/**
- * Certificates responses
- */
 function generateCertificatesResponse(
-  resumeData: ReturnType<typeof getStructuredResumeData>
+  resumeData: StructuredResumeData
 ): ChatResponse {
   const { certificates } = resumeData;
 
   const certList = certificates
     .map(
       (cert) =>
-        `• **${cert.title}** (${cert.date}) - ${cert.skills
+        `• **${cert.title}** (${cert.date}) — ${cert.skills
           .slice(0, 3)
-          .join(", ")}${cert.skills.length > 3 ? "..." : ""}`
+          .join(", ")}${cert.skills.length > 3 ? "…" : ""}`
     )
     .join("\n");
 
   return {
-    message: `Emmanuel has earned several professional certifications:
-
-${certList}
-
-These certifications demonstrate his commitment to continuous learning and expertise in secure coding, system architecture, and microservices.`,
+    message: `Emmanuel has earned several professional certifications:\n\n${certList}`,
     suggestions: [
       "What are his core technical skills?",
       "Tell me about his work at VertoFx",
@@ -389,11 +337,8 @@ These certifications demonstrate his commitment to continuous learning and exper
   };
 }
 
-/**
- * Awards responses
- */
 function generateAwardsResponse(
-  resumeData: ReturnType<typeof getStructuredResumeData>
+  resumeData: StructuredResumeData
 ): ChatResponse {
   const { awards } = resumeData;
 
@@ -402,11 +347,7 @@ function generateAwardsResponse(
     .join("\n");
 
   return {
-    message: `Emmanuel has received notable recognition for his work:
-
-${awardList}
-
-These awards reflect his exceptional performance and impact at VertoFx, where he's driving significant product growth and innovation.`,
+    message: `Emmanuel has received notable recognition for his work:\n\n${awardList}`,
     suggestions: [
       "What are his biggest achievements at VertoFx?",
       "What technologies does he specialize in?",
@@ -416,11 +357,8 @@ These awards reflect his exceptional performance and impact at VertoFx, where he
   };
 }
 
-/**
- * Publications responses
- */
 function generatePublicationsResponse(
-  resumeData: ReturnType<typeof getStructuredResumeData>
+  resumeData: StructuredResumeData
 ): ChatResponse {
   const { publications } = resumeData;
 
@@ -429,56 +367,37 @@ function generatePublicationsResponse(
     .join("\n");
 
   return {
-    message: `Emmanuel has shared his knowledge through several publications:
-
-${pubList}
-
-He's passionate about sharing technical insights and helping other developers improve their skills.`,
+    message: `Emmanuel has shared his knowledge through several publications:\n\n${pubList}`,
     suggestions: [
       "What technologies is he expert in?",
-      "Show me his impressive projects",
+      "Show me his projects",
       "What about his work experience?",
     ],
     data: { publications },
   };
 }
 
-/**
- * Research responses
- */
 function generateResearchResponse(
-  resumeData: ReturnType<typeof getStructuredResumeData>
+  resumeData: StructuredResumeData
 ): ChatResponse {
-  const { researchInterests, researchProjects } = resumeData as any;
+  const { researchInterests, researchProjects } = resumeData;
 
-  const interests =
-    researchInterests && researchInterests.length
-      ? researchInterests.join(", ")
-      : "Computer Vision, Machine Learning";
+  const interests = researchInterests.join(", ");
 
-  const projectLines = (researchProjects || [])
-    .map((p: any) => {
-      const highlights = p.highlights
-        ? p.highlights.map((h: string) => `  • ${h}`).join("\n")
-        : "";
-      return `• ${p.title} (${p.year})\n${highlights}${
-        p.link ? `\n    Link: ${p.link}` : ""
+  const projectLines = researchProjects
+    .map((p) => {
+      const highlights = p.highlights.map((h) => `  • ${h}`).join("\n");
+      return `• **${p.title}** (${p.year})\n${highlights}${
+        p.link ? `\n  Link: ${p.link}` : ""
       }`;
     })
     .join("\n\n");
 
-  const message = `Emmanuel is active in applied AI research with interests spanning: ${interests}.
+  return {
+    message: `Emmanuel is active in applied AI research with interests spanning: ${interests}.
 
 Recent research project(s):
-${
-  projectLines ||
-  "• Automatic Plate Number Recognition using OpenCV (>77% accuracy)"
-}
-
-He focuses on reliable ML systems that drive measurable product growth impact.`;
-
-  return {
-    message,
+${projectLines}`,
     suggestions: [
       "Show me his publications",
       "What technologies does he use?",
@@ -488,101 +407,151 @@ He focuses on reliable ML systems that drive measurable product growth impact.`;
   };
 }
 
-/**
- * Contact responses
- */
 function generateContactResponse(
-  resumeData: ReturnType<typeof getStructuredResumeData>
+  resumeData: StructuredResumeData
 ): ChatResponse {
   const { personalInfo } = resumeData;
   const { contact } = personalInfo;
 
+  const linkedIn = contact.social.find((s) => s.name === "LinkedIn")?.url;
+  const github = contact.social.find((s) => s.name === "GitHub")?.url;
+  const x = contact.social.find((s) => s.name === "X")?.url;
+
+  const lines = [
+    `Email: ${contact.email}`,
+    linkedIn ? `LinkedIn: ${linkedIn}` : null,
+    github ? `GitHub: ${github}` : null,
+    x ? `X: ${x}` : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
   return {
     message: `You can reach Emmanuel through:
 
-📧 Email: ${contact.email}
-📱 Phone: ${contact.tel}
-💼 LinkedIn: ${contact.social.find((s) => s.name === "GitHub")?.url}
-🐙 GitHub: ${contact.social.find((s) => s.name === "GitHub")?.url}
+${lines}
 
-He's currently based in ${
-      personalInfo.location
-    } and open to discussing exciting opportunities!`,
+He's currently based in ${personalInfo.location} and open to discussing exciting opportunities.`,
     suggestions: [
       "What's his experience at VertoFx?",
+      "Tell me about Sorstain",
       "Show me his technical skills",
-      "Tell me about his projects",
     ],
-    data: { contact },
+    data: { contact: { email: contact.email, social: contact.social } },
   };
 }
 
-/**
- * General overview responses
- */
 function generateGeneralResponse(
-  resumeData: ReturnType<typeof getStructuredResumeData>
+  resumeData: StructuredResumeData
 ): ChatResponse {
   const { personalInfo, experience } = resumeData;
   const totalYears = calculateYearsOfExperience(experience);
+  const companies = experience.map((e) => e.company).join(", ");
 
   return {
-    message: `Emmanuel Obi is a ${personalInfo.title} based in ${personalInfo.location}.
+    message: `**Emmanuel Obi** is a ${personalInfo.title} based in ${personalInfo.location}.
 
 ${personalInfo.summary}
 
-With ${totalYears}+ years of experience, he's worked at companies like VertoFx (YC 2019), RoadPreppers Technologies, and Atlens Limited, specializing in product growth, AI-powered features, and scalable system architecture.`,
+With ${totalYears}+ years of experience, he's worked at ${companies}, specializing in product growth, AI-powered features, and scalable system architecture.`,
     suggestions: [
       "What are his biggest career achievements?",
-      "What technologies does he specialize in?",
+      "Tell me about Sorstain",
       "Show me his most impressive projects",
     ],
   };
 }
 
-/**
- * Fallback response for unknown queries
- */
-function generateFallbackResponse(query: ProcessedQuery): ChatResponse {
-  const suggestions = [
-    "What's Emmanuel's role at VertoFx?",
-    "What technologies does he work with?",
-    "Show me his career achievements",
-    "Tell me about his education",
-  ];
+function generateFallbackResponse(
+  query: ProcessedQuery,
+  resumeData: StructuredResumeData
+): ChatResponse {
+  // Best-effort: if we extracted entities, answer about them
+  const company = resumeData.experience.find((exp) =>
+    query.entities.some((e) => matchesEntity(exp.company, e))
+  );
+  if (company) {
+    return generateExperienceResponse(
+      { ...query, intent: QueryIntent.EXPERIENCE, entities: [company.company] },
+      resumeData,
+      []
+    );
+  }
 
-  if (query.keywords.length > 0) {
-    return {
-      message: `I'm not quite sure how to answer that, but I'd love to help! I can tell you about Emmanuel's work experience, technical skills, projects, education, certifications, awards, and publications. What would you like to know?`,
-      suggestions,
-    };
+  const project = resumeData.projects.find((p) =>
+    query.entities.some((e) => matchesEntity(p.title, e))
+  );
+  if (project) {
+    return generateProjectsResponse(
+      { ...query, intent: QueryIntent.PROJECTS, entities: [project.title] },
+      resumeData
+    );
+  }
+
+  const skill = resumeData.skills.find((s) =>
+    query.entities.some((e) => matchesEntity(s, e))
+  );
+  if (skill) {
+    return generateSkillsResponse(
+      { ...query, intent: QueryIntent.SKILLS, entities: [skill] },
+      resumeData
+    );
   }
 
   return {
     message:
-      "I'm here to answer questions about Emmanuel's professional background. What would you like to know?",
-    suggestions,
+      "I'm not quite sure how to answer that, but I can tell you about Emmanuel's work experience, technical skills, projects (including Sorstain and ObiChops), education, certifications, awards, and publications. What would you like to know?",
+    suggestions: DEFAULT_SUGGESTIONS,
   };
 }
 
 /**
- * Calculate years of experience
+ * Calculate years of experience from earliest start month/year to now
  */
 function calculateYearsOfExperience(
-  experience: ReturnType<typeof getStructuredResumeData>["experience"]
+  experience: StructuredResumeData["experience"]
 ): number {
   if (experience.length === 0) return 0;
 
-  // Get the earliest job (last in array)
-  const first = experience[experience.length - 1];
+  const monthMap: Record<string, number> = {
+    jan: 0,
+    january: 0,
+    feb: 1,
+    february: 1,
+    mar: 2,
+    march: 2,
+    apr: 3,
+    april: 3,
+    may: 4,
+    jun: 5,
+    june: 5,
+    jul: 6,
+    july: 6,
+    aug: 7,
+    august: 7,
+    sep: 8,
+    sept: 8,
+    september: 8,
+    oct: 9,
+    october: 9,
+    nov: 10,
+    november: 10,
+    dec: 11,
+    december: 11,
+  };
 
-  // Duration format is "Mon YYYY - Mon YYYY" or "Mon YYYY - Present"
-  // Extract the start date
-  const startDateStr = first.duration.split(" - ")[0]; // e.g., "Apr 2021"
-  const startYear = parseInt(startDateStr.split(" ")[1]); // Extract year
+  let earliest = Date.now();
 
-  const currentYear = new Date().getFullYear();
-  const yearsOfExperience = currentYear - startYear;
+  for (const job of experience) {
+    const parts = job.start.trim().split(/\s+/);
+    if (parts.length < 2) continue;
+    const month = monthMap[parts[0].toLowerCase()];
+    const year = parseInt(parts[1], 10);
+    if (month === undefined || Number.isNaN(year)) continue;
+    const startMs = new Date(year, month, 1).getTime();
+    if (startMs < earliest) earliest = startMs;
+  }
 
-  return yearsOfExperience;
+  const years = (Date.now() - earliest) / (1000 * 60 * 60 * 24 * 365.25);
+  return Math.max(1, Math.floor(years));
 }
