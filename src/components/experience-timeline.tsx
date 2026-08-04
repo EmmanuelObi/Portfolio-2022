@@ -1,57 +1,54 @@
 "use client";
+
 import React from "react";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { RESUME_DATA } from "@/data/resume-data";
+import { LogoMark } from "@/components/logo-mark";
 
-interface TimelineItemProps {
-  company: string;
-  title: string;
-  duration: string;
-  description: string;
-  badges: readonly string[];
-}
+type WorkItem = (typeof RESUME_DATA.work)[number];
 
-function TimelineItem({ company, title, duration, description, badges }: TimelineItemProps) {
+function TimelineItem({ work }: { work: WorkItem }) {
   return (
-    <div className="relative pl-8 group">
-      <span className="absolute left-0 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground ring-4 ring-background shadow-md"></span>
-      <Card className="border-none bg-transparent shadow-none">
-        <CardHeader className="p-0">
-          <div className="flex flex-wrap items-start justify-between gap-2">
-            <h3 className="text-body font-semibold flex items-center gap-2">
-              <span className="hover:underline/60 transition-colors">{company}</span>
-              <span className="flex gap-1">
-                {badges.map(b => (
-                  <Badge key={b} variant="secondary" className="text-[10px] py-0 px-1">{b}</Badge>
-                ))}
+    <article className="group relative grid gap-3 border-b border-border py-8 first:pt-0 last:border-b-0 last:pb-0 md:grid-cols-[7.5rem_1fr] md:gap-8">
+      <div className="text-mono-xs text-muted-foreground md:pt-1">
+        {work.start} – {work.end}
+      </div>
+
+      <div className="min-w-0 space-y-3">
+        <div className="flex items-start gap-3">
+          {"logo" in work && work.logo && (
+            <LogoMark logo={work.logo} alt={work.company} />
+          )}
+          <div className="min-w-0 space-y-1">
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+              <a
+                href={work.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-subheading text-foreground hover:text-primary"
+              >
+                {work.company}
+              </a>
+              <span className="text-body-sm text-muted-foreground">
+                {work.badges.join(" · ")}
               </span>
-            </h3>
-            <div className="text-mono-xs text-muted-foreground tabular-nums">{duration}</div>
+            </div>
+            <p className="text-body-sm font-medium text-primary">{work.title}</p>
           </div>
-          <p className="mt-1 text-body-sm text-primary/80 font-medium">{title}</p>
-        </CardHeader>
-  <CardContent className="p-0 pt-2 text-body-sm text-muted-foreground">
-          {description}
-        </CardContent>
-      </Card>
-      <div className="absolute left-[6px] top-6 w-[2px] bg-gradient-to-b from-primary/60 to-transparent h-full" />
-    </div>
+        </div>
+
+        <p className="text-body-sm leading-relaxed text-muted-foreground">
+          {work.description}
+        </p>
+      </div>
+    </article>
   );
 }
 
 export function ExperienceTimeline() {
   return (
-    <div className="space-y-8">
-      {RESUME_DATA.work.map(work => (
-        <TimelineItem
-          key={work.company}
-          company={work.company}
-          title={work.title}
-          duration={`${work.start} - ${work.end}`}
-          description={work.description}
-          badges={work.badges}
-        />
+    <div>
+      {RESUME_DATA.work.map((work) => (
+        <TimelineItem key={work.company} work={work} />
       ))}
     </div>
   );

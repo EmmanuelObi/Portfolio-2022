@@ -16,18 +16,20 @@ import {
   ParabolLogo,
   TastyCloudLogo,
   YearProgressLogo,
+  SorstainLogo,
+  ObiChopsLogo,
 } from "@/images/logos";
 import { GitHubIcon, LinkedInIcon, XIcon } from "@/components/icons";
 
 export const RESUME_DATA = {
   name: "Emmanuel Obi",
   initials: "EO",
-  location: "London, United Kingdom",
-  locationLink: "https://www.google.com/maps/place/London",
+  location: "Lagos, Nigeria",
+  locationLink: "https://www.google.com/maps/place/Lagos,+Nigeria",
   about: "Software Engineer & AI Researcher",
   summary:
     "Builder at heart with a strong track record of shipping user-centric products and driving growth through onboarding, activation, and retention improvements. Led AI-powered initiatives that 60× onboarding speed and delivered $2M+ in recovered revenue within 48 hours. Thrive in startup environments, owning products end-to-end from idea to impact.",
-  avatarUrl: "https://avatars.githubusercontent.com/u/63916312?v=4",
+  avatarUrl: "/avatar.png",
   personalWebsiteUrl: "https://emmanuel-obi.vercel.app",
   contact: {
     email: "obiemmy123@gmail.com",
@@ -45,7 +47,7 @@ export const RESUME_DATA = {
       },
       {
         name: "X",
-        url: "https://x.com/koliko_man",
+        url: "https://x.com/kolikothe1st",
         icon: XIcon,
       },
     ],
@@ -113,6 +115,46 @@ export const RESUME_DATA = {
   ],
   projects: [
     {
+      title: "Sorstain",
+      techStack: [
+        "TypeScript",
+        "Next.js",
+        "React",
+        "Node.js",
+        "AWS",
+        "Lambda",
+        "MongoDB",
+        "Redis",
+      ],
+      description:
+        "Nigeria's managed repair platform — vetted artisans, photo updates at every stage, and a digital warranty on every order with 48-hour turnaround on most repairs.",
+      logo: SorstainLogo,
+      link: {
+        label: "sorstain.com",
+        href: "https://sorstain.com",
+      },
+    },
+    {
+      title: "ObiChops",
+      techStack: [
+        "TypeScript",
+        "Next.js",
+        "React",
+        "Node.js",
+        "AWS",
+        "Lambda",
+        "MongoDB",
+        "Redis",
+      ],
+      description:
+        "Workplace meals made simple — browse the weekly menu, stay within your allowance, and place orders before the window closes in one calm chopspace.",
+      logo: ObiChopsLogo,
+      link: {
+        label: "obichops.com",
+        href: "https://obichops.com",
+      },
+    },
+    {
       title: "Verto Platform",
       techStack: ["Angular", "Node", "Typescript", "AWS", "MySQL", "MongoDb"],
       description:
@@ -124,24 +166,6 @@ export const RESUME_DATA = {
       },
     },
     {
-      title: "VertoFx",
-      techStack: [
-        "TypeScript",
-        "React",
-        "Node.js",
-        "AWS",
-        "Microservices",
-        "AI/ML",
-      ],
-      description:
-        "Cross-border fintech platform based in the United Kingdom. Led AI-powered onboarding and retention initiatives.",
-      logo: ParabolLogo,
-      link: {
-        label: "vertofx.com",
-        href: "https://vertofx.com/",
-      },
-    },
-    {
       title: "LARA - Directions Assistant",
       techStack: ["TypeScript", "React", "PWA", "Python", "Django"],
       description:
@@ -150,17 +174,6 @@ export const RESUME_DATA = {
       link: {
         label: "lara.ng",
         href: "https://lara.ng/",
-      },
-    },
-    {
-      title: "WireMoney",
-      techStack: ["Angular", "TypeScript", "NgRx", "JavaScript"],
-      description:
-        "Payments app that makes it super easy and fast to send money to loved ones or get payments from clients overseas with lower transfer fees.",
-      logo: ConsultlyLogo,
-      link: {
-        label: "wiremoney.com.au",
-        href: "https://wiremoney.com.au/",
       },
     },
   ],

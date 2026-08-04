@@ -4,17 +4,19 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<string>("dark");
+  const [theme, setTheme] = useState<string>("light");
 
   useEffect(() => {
     const stored = window.localStorage.getItem("theme-preference");
-    if (stored === "light") {
-      document.documentElement.classList.remove("dark");
-      setTheme("light");
-    } else {
-      // Default to dark mode
+    if (stored === "dark") {
       document.documentElement.classList.add("dark");
       setTheme("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      setTheme("light");
+      if (!stored) {
+        window.localStorage.setItem("theme-preference", "light");
+      }
     }
   }, []);
 
@@ -31,7 +33,7 @@ export function ThemeToggle() {
       size="icon"
       aria-label="Toggle theme"
       onClick={toggle}
-      className="fixed top-4 right-4 z-50 glass w-10 h-10"
+      className="fixed top-4 right-4 z-50 h-9 w-9 border-border bg-background/90 print:hidden"
     >
       {theme === "dark" ? (
         <Sun className="h-4 w-4" />

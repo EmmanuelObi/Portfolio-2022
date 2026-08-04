@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
-import { Raleway } from "next/font/google";
+import { Newsreader, DM_Sans } from "next/font/google";
 import { ChatWidget } from "@/components/chat-widget";
 import { ThemeToggle } from "@/components/theme-toggle";
 import "./globals.css";
@@ -35,9 +35,9 @@ export const metadata: Metadata = {
     siteName: "Emmanuel Obi Portfolio",
     images: [
       {
-        url: "https://avatars.githubusercontent.com/u/63916312?v=4",
-        width: 1200,
-        height: 630,
+        url: "https://emmanuel-obi.vercel.app/avatar.png",
+        width: 586,
+        height: 588,
         alt: "Emmanuel Obi",
       },
     ],
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     description:
       "Builder at heart driving product growth through AI-powered initiatives and user-centric development.",
     creator: "@kolikothe1st",
-    images: ["https://avatars.githubusercontent.com/u/63916312?v=4"],
+    images: ["https://emmanuel-obi.vercel.app/avatar.png"],
   },
   robots: {
     index: true,
@@ -63,10 +63,18 @@ export const metadata: Metadata = {
   },
 };
 
-// If loading a variable font, you don't need to specify the font weight
-const raleway = Raleway({
+const newsreader = Newsreader({
   subsets: ["latin"],
   display: "swap",
+  variable: "--font-display",
+  style: ["normal", "italic"],
+  adjustFontFallback: false,
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
 });
 
 export default function RootLayout({
@@ -75,8 +83,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`dark ${raleway.className}`}>
-      <body className="min-h-screen selection:bg-primary/20 selection:text-primary">
+    <html lang="en" className={`${newsreader.variable} ${dmSans.variable}`}>
+      <body className="min-h-screen font-sans selection:bg-primary/15 selection:text-foreground">
         <div className="relative">
           {children}
           <ThemeToggle />

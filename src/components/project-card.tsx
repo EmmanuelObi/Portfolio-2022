@@ -1,59 +1,94 @@
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "./ui/card";
-import { Badge } from "./ui/badge";
+import { RESUME_DATA } from "@/data/resume-data";
+import { LogoMark } from "@/components/logo-mark";
 
-interface Props {
+type Project = (typeof RESUME_DATA.projects)[number];
+
+interface ProjectRowProps {
+  project: Project;
+}
+
+export function ProjectRow({ project }: ProjectRowProps) {
+  const href = "link" in project ? project.link.href : undefined;
+
+  const title = href ? (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-subheading text-foreground underline-offset-4 hover:text-primary hover:underline"
+    >
+      {project.title}
+      <span className="ml-1.5 text-muted-foreground no-underline" aria-hidden>
+        ↗
+      </span>
+    </a>
+  ) : (
+    <span className="text-subheading text-foreground">{project.title}</span>
+  );
+
+  return (
+    <article className="group flex gap-4 border-b border-border py-6 first:pt-0 last:border-b-0 last:pb-0 md:gap-6">
+      {"logo" in project && project.logo && (
+        <LogoMark logo={project.logo} alt={project.title} className="h-10 w-10" />
+      )}
+      <div className="min-w-0 flex-1 space-y-2">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          {title}
+          {href && (
+            <span className="hidden text-mono-xs text-muted-foreground print:inline">
+              {href.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+            </span>
+          )}
+        </div>
+        <p className="text-body-sm text-muted-foreground">{project.description}</p>
+        <p className="text-mono-xs text-muted-foreground">
+          {project.techStack.join(" · ")}
+        </p>
+      </div>
+    </article>
+  );
+}
+
+export function ProjectsList() {
+  return (
+    <div>
+      {RESUME_DATA.projects.map((project) => (
+        <ProjectRow key={project.title} project={project} />
+      ))}
+    </div>
+  );
+}
+
+/** @deprecated Prefer ProjectsList / ProjectRow for editorial layout */
+export function ProjectCard({
+  title,
+  description,
+  tags,
+  link,
+}: {
   title: string;
   description: string;
   tags: readonly string[];
   link?: string;
-}
-
-export function ProjectCard({ title, description, tags, link }: Props) {
+}) {
   return (
-    <Card className="flex flex-col overflow-hidden border border-muted p-3">
-      <CardHeader className="">
-        <div className="space-y-1">
-          <CardTitle className="text-base">
-            {link ? (
-              <a
-                href={link}
-                target="_blank"
-                className="inline-flex items-center gap-1 hover:underline"
-              >
-                {title}{" "}
-                <span className="size-1 rounded-full bg-green-500"></span>
-              </a>
-            ) : (
-              title
-            )}
-          </CardTitle>
-          <div className="hidden font-mono text-xs underline print:visible">
-            {link?.replace("https://", "").replace("www.", "").replace("/", "")}
-          </div>
-          <CardDescription className="font-mono text-xs">
-            {description}
-          </CardDescription>
-        </div>
-      </CardHeader>
-      <CardContent className="mt-auto flex">
-        <div className="mt-2 flex flex-wrap gap-1">
-          {tags.map((tag) => (
-            <Badge
-              className="px-1 py-0 text-[10px]"
-              variant="secondary"
-              key={tag}
-            >
-              {tag}
-            </Badge>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <article className="border-b border-border py-4">
+      <h3 className="text-subheading">
+        {link ? (
+          <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary hover:underline"
+          >
+            {title}
+          </a>
+        ) : (
+          title
+        )}
+      </h3>
+      <p className="mt-1 text-body-sm text-muted-foreground">{description}</p>
+      <p className="mt-2 text-mono-xs text-muted-foreground">{tags.join(" · ")}</p>
+    </article>
   );
 }

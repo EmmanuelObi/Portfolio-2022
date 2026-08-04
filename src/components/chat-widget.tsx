@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 
 interface Message {
@@ -53,7 +52,6 @@ export function ChatWidget() {
     }
   }, [isOpen]);
 
-  // Cleanup typing timeout on unmount
   useEffect(() => {
     return () => {
       if (typingTimeoutRef.current) {
@@ -62,13 +60,12 @@ export function ChatWidget() {
     };
   }, []);
 
-  // Simulate typing animation
   const animateTyping = (
     text: string,
     callback: (displayedText: string) => void
   ) => {
     let currentIndex = 0;
-    const typingSpeed = 20; // milliseconds per character
+    const typingSpeed = 20;
 
     const typeNextChar = () => {
       if (currentIndex < text.length) {
@@ -88,14 +85,12 @@ export function ChatWidget() {
     const messageText = text || input.trim();
     if (!messageText || isLoading) return;
 
-    // Add user message
     const userMessage: Message = { role: "user", content: messageText };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
     setSuggestions([]);
 
-    // Simulate thinking delay (500-1500ms based on query length)
     const thinkingDelay = Math.min(1500, 500 + messageText.length * 10);
     await new Promise((resolve) => setTimeout(resolve, thinkingDelay));
 
@@ -115,12 +110,10 @@ export function ChatWidget() {
 
       const data: ChatResponse = await response.json();
 
-      // Update session ID if provided
       if (data.sessionId && !sessionId) {
         setSessionId(data.sessionId);
       }
 
-      // Add assistant message with typing animation
       const assistantMessage: Message = {
         role: "assistant",
         content: "",
@@ -129,7 +122,6 @@ export function ChatWidget() {
       setMessages((prev) => [...prev, assistantMessage]);
       setIsLoading(false);
 
-      // Animate the response text
       animateTyping(data.message, (displayedText) => {
         setMessages((prev) => {
           const newMessages = [...prev];
@@ -141,7 +133,6 @@ export function ChatWidget() {
         });
       });
 
-      // Update suggestions after typing is done
       setTimeout(
         () => {
           if (data.suggestions && data.suggestions.length > 0) {
@@ -175,44 +166,34 @@ export function ChatWidget() {
 
   return (
     <>
-      {/* Chat Button */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full shadow-lg transition-all hover:scale-105 print:hidden bg-muted/80 hover:bg-muted border border-border backdrop-blur-sm flex items-center justify-center group"
+          className="fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-md border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:border-primary/40 hover:text-foreground print:hidden"
           aria-label="Open chat"
         >
-          <MessageCircle className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+          <MessageCircle className="h-4 w-4" />
         </button>
       )}
 
-      {/* Chat Window */}
       {isOpen && (
-        <Card className="glass fixed bottom-6 right-6 z-50 flex h-[600px] w-[400px] flex-col shadow-2xl print:hidden animate-in slide-in-from-bottom-4 duration-300">
-          {/* Header */}
-          <div className="flex items-center justify-between border-b bg-gradient-to-r from-primary to-accent p-4 text-primary-foreground rounded-t-lg">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <MessageCircle className="h-6 w-6" />
-                <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-green-500 border-2 border-white"></div>
-              </div>
-              <div>
-                <h3 className="font-semibold">Ask about Emmanuel</h3>
-                <p className="text-xs opacity-90">AI Assistant</p>
-              </div>
+        <div className="fixed bottom-6 right-6 z-50 flex h-[560px] w-[min(100vw-2rem,380px)] flex-col overflow-hidden rounded-md border border-border bg-background shadow-lg print:hidden animate-in slide-in-from-bottom-4 duration-300">
+          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+            <div>
+              <h3 className="font-display text-base font-medium">Ask about Emmanuel</h3>
+              <p className="text-mono-xs text-muted-foreground">AI assistant</p>
             </div>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsOpen(false)}
-              className="text-primary-foreground hover:bg-primary-foreground/10"
+              className="h-8 w-8 text-muted-foreground"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4" />
             </Button>
           </div>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 custom-scrollbar">
+          <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -221,53 +202,44 @@ export function ChatWidget() {
                 }`}
               >
                 <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-2 backdrop-blur-sm ${
+                  className={`max-w-[85%] rounded-md px-3 py-2 text-sm ${
                     message.role === "user"
-                      ? "bg-primary/90 text-primary-foreground"
-                      : "bg-muted/70 text-muted-foreground ring-1 ring-border/40"
-                  } animate-fade-in`}
+                      ? "bg-primary text-primary-foreground"
+                      : "border border-border bg-muted/40 text-foreground"
+                  }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">
-                    {message.content}
-                  </p>
+                  <p className="whitespace-pre-wrap">{message.content}</p>
                 </div>
               </div>
             ))}
 
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-muted rounded-2xl px-4 py-3 flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm text-muted-foreground">
-                    Thinking...
-                  </span>
+                <div className="flex items-center gap-2 rounded-md border border-border bg-muted/40 px-3 py-2">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Thinking…</span>
                 </div>
               </div>
             )}
 
             {isTyping && !isLoading && (
               <div className="flex justify-start">
-                <div className="bg-muted rounded-2xl px-4 py-3 flex items-center gap-2">
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                    <div className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                    <div className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-bounce"></div>
-                  </div>
+                <div className="flex items-center gap-1 rounded-md border border-border bg-muted/40 px-3 py-2">
+                  <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-muted-foreground/60" />
+                  <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-muted-foreground/60 [animation-delay:150ms]" />
+                  <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-muted-foreground/60 [animation-delay:300ms]" />
                 </div>
               </div>
             )}
 
-            {/* Suggestions */}
             {suggestions.length > 0 && !isLoading && (
               <div className="flex flex-col gap-2">
-                <p className="text-xs text-muted-foreground px-1">
-                  Suggested questions:
-                </p>
+                <p className="text-label px-0.5">Suggested</p>
                 {suggestions.map((suggestion, index) => (
                   <button
                     key={index}
                     onClick={() => handleSuggestionClick(suggestion)}
-                    className="text-left rounded-lg border border-border bg-background px-3 py-2 text-sm hover:bg-accent hover:border-accent-foreground/20 transition-colors"
+                    className="rounded-md border border-border bg-background px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
                   >
                     {suggestion}
                   </button>
@@ -278,8 +250,7 @@ export function ChatWidget() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div className="border-t p-4 bg-gradient-to-b from-background/40 to-background/80 backdrop-blur-sm rounded-b-lg">
+          <div className="border-t border-border p-3">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -293,15 +264,15 @@ export function ChatWidget() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask me anything..."
+                placeholder="Ask me anything…"
                 disabled={isLoading}
-                className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               />
               <Button
                 type="submit"
                 size="icon"
                 disabled={!input.trim() || isLoading}
-                className="shrink-0"
+                className="h-9 w-9 shrink-0"
               >
                 {isLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -311,7 +282,7 @@ export function ChatWidget() {
               </Button>
             </form>
           </div>
-        </Card>
+        </div>
       )}
     </>
   );
